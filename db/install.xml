@@ -10,9 +10,11 @@
                 <FIELD NAME="definitionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The ID of the form definition this criterion is part of" PREVIOUS="id" NEXT="sortorder"/>
                 <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Defines the order of the criterion in the rubric" PREVIOUS="definitionid" NEXT="shortname"/>
                 <FIELD NAME="shortname" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="shortname of this criterion" PREVIOUS="sortorder" NEXT="description"/>
-                <FIELD NAME="description" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The criterion description" PREVIOUS="shortname" NEXT="descriptionformat"/>
-                <FIELD NAME="descriptionformat" TYPE="int" LENGTH="2" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="The format of the description field" PREVIOUS="description" NEXT="maxmark"/>
-                <FIELD NAME="maxmark" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" DECIMALS="2" COMMENT="maximum grade that can be assigned using this criterion" PREVIOUS="descriptionformat"/>
+                <FIELD NAME="description" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The criterion description for students" PREVIOUS="shortname" NEXT="descriptionformat"/>
+                <FIELD NAME="descriptionformat" TYPE="int" LENGTH="2" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="The format of the description field" PREVIOUS="description" NEXT="descriptionmarkers"/>
+                <FIELD NAME="descriptionmarkers" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Description for Markers" PREVIOUS="descriptionformat" NEXT="descriptionmarkersformat"/>
+                <FIELD NAME="descriptionmarkersformat" TYPE="int" LENGTH="2" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="descriptionmarkers" NEXT="maxmark"/>
+                <FIELD NAME="maxmark" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" DECIMALS="2" COMMENT="maximum grade that can be assigned using this criterion" PREVIOUS="descriptionmarkersformat"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_definitionid"/>
@@ -23,9 +25,8 @@
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="instanceid"/>
                 <FIELD NAME="instanceid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The ID of the grading form instance" PREVIOUS="id" NEXT="criterionid"/>
-                <FIELD NAME="criterionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The ID of the criterion (row) in the rubric" PREVIOUS="instanceid" NEXT="levelid"/>
-                <FIELD NAME="levelid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="If a particular level was selected during the assessment, its ID is stored here" PREVIOUS="criterionid" NEXT="remark"/>
-                <FIELD NAME="remark" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Side note feedback regarding this particular criterion" PREVIOUS="levelid" NEXT="remarkformat"/>
+                <FIELD NAME="criterionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The ID of the criterion (row) in the rubric" PREVIOUS="instanceid" NEXT="remark"/>
+                <FIELD NAME="remark" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Side note feedback regarding this particular criterion" PREVIOUS="criterionid" NEXT="remarkformat"/>
                 <FIELD NAME="remarkformat" TYPE="int" LENGTH="2" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="The format of the remark field" PREVIOUS="remark"/>
             </FIELDS>
             <KEYS>
@@ -34,9 +35,6 @@
                 <KEY NAME="fk_criterionid" TYPE="foreign" FIELDS="criterionid" REFTABLE="gradingform_guide_criteria" REFFIELDS="id" PREVIOUS="fk_instanceid" NEXT="uq_instance_criterion"/>
                 <KEY NAME="uq_instance_criterion" TYPE="unique" FIELDS="instanceid, criterionid" PREVIOUS="fk_criterionid"/>
             </KEYS>
-            <INDEXES>
-                <INDEX NAME="ix_levelid" UNIQUE="false" FIELDS="levelid" COMMENT="levelid acts as a foreign key but null values are allowed"/>
-            </INDEXES>
         </TABLE>
     </TABLES>
 </XMLDB>
