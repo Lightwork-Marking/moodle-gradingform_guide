@@ -422,9 +422,9 @@ class gradingform_guide_controller extends gradingform_controller {
         $guide = '';
         if (has_capability('moodle/grade:managegradingforms', $page->context)) {
             $guide .= $output->display_guide_mapping_explained($this->get_min_max_score());
-            $guide .= $output->display_guide($criteria, $options, self::DISPLAY_PREVIEW, 'guide');
+            $guide .= $output->display_guide($criteria, $comments, $options, self::DISPLAY_PREVIEW, 'guide');
         } else {
-            $guide .= $output->display_guide($criteria, $options, self::DISPLAY_PREVIEW_GRADED, 'guide');
+            $guide .= $output->display_guide($criteria, $comments, $options, self::DISPLAY_PREVIEW_GRADED, 'guide');
         }
 
         return $guide;
@@ -749,7 +749,7 @@ class gradingform_guide_instance extends gradingform_instance {
         if (!empty($options['showdescriptionteacher'])) {
             $html .= html_writer::tag('div', $this->get_controller()->get_formatted_description(), array('class' => 'gradingform_guide-description'));
         }
-        $html .= $this->get_controller()->get_renderer($page)->display_guide($criteria, $options, $mode, $gradingformelement->getName(), $value);
+        $html .= $this->get_controller()->get_renderer($page)->display_guide($criteria, $comments, $options, $mode, $gradingformelement->getName(), $value);
         return $html;
     }
 }

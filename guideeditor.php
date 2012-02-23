@@ -90,7 +90,7 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
         if ($this->validationerrors) {
             $html .= $renderer->notification($this->validationerrors, 'error');
         }
-        $html .= $renderer->display_guide($data['criteria'], $data['options'], $mode, $this->getName());
+        $html .= $renderer->display_guide($data['criteria'], $data['comments'], $data['options'], $mode, $this->getName());
         return $html;
     }
     /**
