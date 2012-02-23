@@ -25,6 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['addcriterion'] = 'Add criterion';
+$string['addcomment'] = 'Add Frequently used comment';
 $string['err_nodescription'] = 'Student description can not be empty';
 $string['err_nodescriptionmarkers'] = 'Marker description can not be empty';
 $string['err_noshortname'] = 'Criterion name can not be empty';

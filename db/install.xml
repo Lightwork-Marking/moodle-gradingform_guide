@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="grade/grading/form/markingguide/db" VERSION="20120222" COMMENT="XMLDB file for Moodle marking guide"
+<XMLDB PATH="grade/grading/form/markingguide/db" VERSION="20120223" COMMENT="XMLDB file for Moodle marking guide"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="../../../../../lib/xmldb/xmldb.xsd"
         >
@@ -21,7 +21,7 @@
                 <KEY NAME="fk_definitionid" TYPE="foreign" FIELDS="definitionid" REFTABLE="grading_definitions" REFFIELDS="id" PREVIOUS="primary"/>
             </KEYS>
         </TABLE>
-        <TABLE NAME="gradingform_guide_fillings" COMMENT="Stores the data of how the rubric is filled by a particular rater" PREVIOUS="gradingform_guide_criteria">
+        <TABLE NAME="gradingform_guide_fillings" COMMENT="Stores the data of how the rubric is filled by a particular rater" PREVIOUS="gradingform_guide_criteria" NEXT="gradingform_guide_faq">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="instanceid"/>
                 <FIELD NAME="instanceid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The ID of the grading form instance" PREVIOUS="id" NEXT="criterionid"/>
@@ -35,6 +35,19 @@
                 <KEY NAME="fk_instanceid" TYPE="foreign" FIELDS="instanceid" REFTABLE="grading_instances" REFFIELDS="id" PREVIOUS="primary" NEXT="fk_criterionid"/>
                 <KEY NAME="fk_criterionid" TYPE="foreign" FIELDS="criterionid" REFTABLE="gradingform_guide_criteria" REFFIELDS="id" PREVIOUS="fk_instanceid" NEXT="uq_instance_criterion"/>
                 <KEY NAME="uq_instance_criterion" TYPE="unique" FIELDS="instanceid, criterionid" PREVIOUS="fk_criterionid"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="gradingform_guide_faq" COMMENT="faq comments used in marking guide" PREVIOUS="gradingform_guide_fillings">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="definitionid"/>
+                <FIELD NAME="definitionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The ID of the form definition this faq is part of" PREVIOUS="id" NEXT="sortorder"/>
+                <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Defines the order of the comments" PREVIOUS="definitionid" NEXT="description"/>
+                <FIELD NAME="description" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The comment description" PREVIOUS="sortorder" NEXT="descriptionformat"/>
+                <FIELD NAME="descriptionformat" TYPE="int" LENGTH="2" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="The format of the description field" PREVIOUS="description"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_definitionid"/>
+                <KEY NAME="fk_definitionid" TYPE="foreign" FIELDS="definitionid" REFTABLE="grading_definitions" REFFIELDS="id" PREVIOUS="primary"/>
             </KEYS>
         </TABLE>
     </TABLES>
