@@ -234,10 +234,12 @@ class gradingform_guide_controller extends gradingform_controller {
         global $DB;
         $sql = "SELECT gd.*,
                        rc.id AS rcid, rc.sortorder AS rcsortorder, rc.description AS rcdescription, rc.descriptionformat AS rcdescriptionformat,
-                       rc.descriptionmarkers as rcdescriptionmarkers, rc.descriptionmarkersformat as rcdescriptionmarkersformat, rc.shortname as rcshortname,
-                       rc.maxscore as rcmaxscore
+                       rc.descriptionmarkers AS rcdescriptionmarkers, rc.descriptionmarkersformat AS rcdescriptionmarkersformat, rc.shortname AS rcshortname,
+                       rc.maxscore AS rcmaxscore,
+                       rf.id as rfid, rf.sortorder AS rfsortorder, rf.description AS rfdescription, rf.descriptionformat AS rfdescriptionformat
                   FROM {grading_definitions} gd
              LEFT JOIN {gradingform_guide_criteria} rc ON (rc.definitionid = gd.id)
+             LEFT JOIN {gradingform_guide_faq} rf ON (rf.definitionid = gd.id)
                  WHERE gd.areaid = :areaid AND gd.method = :method
               ORDER BY rc.sortorder";
         $params = array('areaid' => $this->areaid, 'method' => $this->get_method_name());
@@ -260,7 +262,12 @@ class gradingform_guide_controller extends gradingform_controller {
                                'maxscore', 'descriptionmarkers', 'descriptionmarkersformat', 'shortname') as $fieldname) {
                     $this->definition->guide_criteria[$record->rcid][$fieldname] = $record->{'rc'.$fieldname};
                 }
-                $this->definition->guide_criteria[$record->rcid]['levels'] = array();
+            }
+            // pick the comment data
+            if (!empty($record->rcid) and empty($this->definition->guide_comment[$record->rcid])) {
+                foreach (array('id', 'sortorder', 'description', 'descriptionformat') as $fieldname) {
+                    $this->definition->guide_comment[$record->rcid][$fieldname] = $record->{'rf'.$fieldname};
+                }
             }
         }
         $rs->close();
