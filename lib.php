@@ -152,11 +152,6 @@ class gradingform_guide_controller extends gradingform_controller {
         $currentcriteria = $currentdefinition->guide_criteria;
         $criteriafields = array('sortorder', 'description', 'descriptionformat', 'descriptionmarkers', 'descriptionmarkersformat', 'shortname', 'maxscore');
         foreach ($newcriteria as $id => $criterion) {
-            // get list of submitted levels
-            $levelsdata = array();
-            if (array_key_exists('levels', $criterion)) {
-                $levelsdata = $criterion['levels'];
-            }
             $criterionmaxscore = null;
             if (preg_match('/^NEWID\d+$/', $id)) {
                 // insert criterion into DB

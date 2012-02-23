@@ -256,4 +256,17 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
         }
         return $this->validationerrors;
     }
+
+    /**
+     * Prepares the data for saving
+     * @see prepare_data()
+     *
+     * @param array $submitValues
+     * @param boolean $assoc
+     * @return array
+     */
+    public function exportValue(&$submitValues, $assoc = false) {
+        $value =  $this->prepare_data($this->_findValue($submitValues));
+        return $this->_prepareValue($value, $assoc);
+    }
 }
