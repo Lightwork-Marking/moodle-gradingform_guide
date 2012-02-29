@@ -192,6 +192,55 @@ class gradingform_guide_controller extends gradingform_controller {
                 $haschanges[3] = true;
             }
         }
+        //now handle comments:
+        if (empty($newdefinition->guide['comments'])) {
+            $newcomment = array();
+        } else {
+            $newcomment = $newdefinition->guide['comments']; // new ones to be saved
+        }
+        $currentcomments = $currentdefinition->guide_comment;
+        $commentfields = array('sortorder', 'description');
+        foreach ($newcomment as $id => $comment) {
+            if (preg_match('/^NEWID\d+$/', $id)) {
+                // insert criterion into DB
+                $data = array('definitionid' => $this->definition->id, 'descriptionformat' => FORMAT_MOODLE); // TODO format is not supported yet
+                foreach ($commentfields as $key) {
+                    if (array_key_exists($key, $comment)) {
+                        $data[$key] = $comment[$key];
+                    }
+                }
+                if ($doupdate) {
+                    $id = $DB->insert_record('gradingform_guide_faq', $data);
+                }
+                $haschanges[5] = true;
+            } else {
+                // update criterion in DB
+                $data = array();
+                foreach ($commentfields as $key) {
+                    if (array_key_exists($key, $comment) && $comment[$key] != $currentcomments[$id][$key]) {
+                        $data[$key] = $comment[$key];
+                    }
+                }
+                if (!empty($data)) {
+                    // update only if something is changed
+                    $data['id'] = $id;
+                    if ($doupdate) {
+                        $DB->update_record('gradingform_guide_faq', $data);
+                    }
+                    $haschanges[1] = true;
+                }
+            }
+        }
+        // remove deleted criteria from DB
+        foreach (array_keys($currentcomments) as $id) {
+            if (!array_key_exists($id, $newcomment)) {
+                if ($doupdate) {
+                    $DB->delete_records('gradingform_guide_faq', array('id' => $id));
+                }
+                $haschanges[3] = true;
+            }
+        }
+        //end comments handle
         foreach (array('status', 'description', 'descriptionformat', 'name', 'options') as $key) {
             if (isset($newdefinition->$key) && $newdefinition->$key != $this->definition->$key) {
                 $haschanges[1] = true;
@@ -255,6 +304,7 @@ class gradingform_guide_controller extends gradingform_controller {
                     $this->definition->$fieldname = $record->$fieldname;
                 }
                 $this->definition->guide_criteria = array();
+                $this->definition->guide_comment = array();
             }
             // pick the criterion data
             if (!empty($record->rcid) and empty($this->definition->guide_criteria[$record->rcid])) {
@@ -264,9 +314,9 @@ class gradingform_guide_controller extends gradingform_controller {
                 }
             }
             // pick the comment data
-            if (!empty($record->rcid) and empty($this->definition->guide_comment[$record->rcid])) {
+            if (!empty($record->rfid) and empty($this->definition->guide_comment[$record->rfid])) {
                 foreach (array('id', 'sortorder', 'description', 'descriptionformat') as $fieldname) {
-                    $this->definition->guide_comment[$record->rcid][$fieldname] = $record->{'rf'.$fieldname};
+                    $this->definition->guide_comment[$record->rfid][$fieldname] = $record->{'rf'.$fieldname};
                 }
             }
         }
@@ -321,13 +371,17 @@ class gradingform_guide_controller extends gradingform_controller {
             $properties = file_prepare_standard_editor($properties, 'description', $options, $this->get_context(),
                 'grading', 'description', $definition->id);
         }
-        $properties->guide = array('criteria' => array(), 'options' => $this->get_options());
+        $properties->guide = array('criteria' => array(), 'options' => $this->get_options(), 'comments' => array());
         if (!empty($definition->guide_criteria)) {
             $properties->guide['criteria'] = $definition->guide_criteria;
         } else if (!$definition && $addemptycriterion) {
             $properties->guide['criteria'] = array('addcriterion' => 1);
         }
-
+        if (!empty($definition->guide_comment)) {
+            $properties->guide['comments'] = $definition->guide_comment;
+        } else if (!$definition && $addemptycriterion) {
+            $properties->guide['comments'] = array('addcomment' => 1);
+        }
         return $properties;
     }
 
@@ -343,7 +397,7 @@ class gradingform_guide_controller extends gradingform_controller {
         $new = parent::get_definition_copy($target);
         $old = $this->get_definition_for_editing();
         $new->description_editor = $old->description_editor;
-        $new->guide = array('criteria' => array(), 'options' => $old->guide['options']);
+        $new->guide = array('criteria' => array(), 'options' => $old->guide['options'], 'comments' => array());
         $newcritid = 1;
         $newlevid = 1;
         foreach ($old->guide['criteria'] as $oldcritid => $oldcrit) {
@@ -351,7 +405,12 @@ class gradingform_guide_controller extends gradingform_controller {
             $new->guide['criteria']['NEWID'.$newcritid] = $oldcrit;
             $newcritid++;
         }
-
+        $newcomid = 1;
+        foreach ($old->guide['comments'] as $oldcritid => $oldcom) {
+            unset($oldcom['id']);
+            $new->guide['comments']['NEWID'.$newcomid] = $oldcom;
+            $newcomid++;
+        }
         return $new;
     }
 
@@ -418,6 +477,7 @@ class gradingform_guide_controller extends gradingform_controller {
 
         $output = $this->get_renderer($page);
         $criteria = $this->definition->guide_criteria;
+        $comments = $this->definition->guide_comment;
         $options = $this->get_options();
         $guide = '';
         if (has_capability('moodle/grade:managegradingforms', $page->context)) {
@@ -717,6 +777,7 @@ class gradingform_guide_instance extends gradingform_instance {
             }
         }
         $criteria = $this->get_controller()->get_definition()->guide_criteria;
+        $comments = $this->get_controller()->get_definition()->guide_comment;
         $options = $this->get_controller()->get_options();
         $value = $gradingformelement->getValue();
         $html = '';

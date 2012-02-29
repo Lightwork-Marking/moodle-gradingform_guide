@@ -115,7 +115,7 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
         }
 
         $errors = array();
-        $return = array('criteria' => array(), 'options' => gradingform_guide_controller::get_default_options());
+        $return = array('criteria' => array(), 'options' => gradingform_guide_controller::get_default_options(), 'comments' => array());
         if (!isset($value['criteria'])) {
             $value['criteria'] = array();
             $errors['err_nocriteria'] = 1;
@@ -194,6 +194,52 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
             $return['criteria'][$id]['sortorder'] = $csortorder++;
         }
 
+        //iterate through comments
+        $lastaction = null;
+        $lastid = null;
+        foreach ($value['comments'] as $id => $comment) {
+            if ($id == 'addcomment') {
+                $id = $this->get_next_id(array_keys($value['comments']));
+                $comment = array('description' => '');
+                $this->nonjsbuttonpressed = true;
+            }
+
+            if ($withvalidation && !array_key_exists('delete', $comment)) {
+                if (!strlen(trim($comment['description']))) {
+                    $errors['err_nodescription'] = 1;
+                    $comment['error_description'] = true;
+                }
+            }
+            if (array_key_exists('moveup', $comment) || $lastaction == 'movedown') {
+                unset($comment['moveup']);
+                if ($lastid !== null) {
+                    $lastcomment = $return['comments'][$lastid];
+                    unset($return['comments'][$lastid]);
+                    $return['comments'][$id] = $comment;
+                    $return['comments'][$lastid] = $lastcomment;
+                } else {
+                    $return['comments'][$id] = $comment;
+                }
+                $lastaction = null;
+                $lastid = $id;
+                $this->nonjsbuttonpressed = true;
+            } else if (array_key_exists('delete', $comment)) {
+                $this->nonjsbuttonpressed = true;
+            } else {
+                if (array_key_exists('movedown', $comment)) {
+                    unset($comment['movedown']);
+                    $lastaction = 'movedown';
+                    $this->nonjsbuttonpressed = true;
+                }
+                $return['comments'][$id] = $comment;
+                $lastid = $id;
+            }
+        }
+        // add sort order field to comments
+        $csortorder = 1;
+        foreach (array_keys($return['comments']) as $id) {
+            $return['comments'][$id]['sortorder'] = $csortorder++;
+        }
         // create validation error string (if needed)
         if ($withvalidation) {
             if (count($errors)) {
