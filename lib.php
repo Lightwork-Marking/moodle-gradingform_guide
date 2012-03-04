@@ -645,7 +645,7 @@ class gradingform_guide_instance extends gradingform_instance {
         $currentgrade = $this->get_guide_filling();
         foreach ($currentgrade['criteria'] as $criterionid => $record) {
             $params = array('instanceid' => $instanceid, 'criterionid' => $criterionid,
-                'levelid' => $record['levelid'], 'remark' => $record['remark'], 'remarkformat' => $record['remarkformat']);
+                'score' => $record['score'], 'remark' => $record['remark'], 'remarkformat' => $record['remarkformat']);
             $DB->insert_record('gradingform_guide_fillings', $params);
         }
         return $instanceid;
@@ -663,8 +663,8 @@ class gradingform_guide_instance extends gradingform_instance {
             return false;
         }
         foreach ($criteria as $id => $criterion) {
-            if (!isset($elementvalue['criteria'][$id]['levelid'])
-                    || !array_key_exists($elementvalue['criteria'][$id]['levelid'], $criterion['levels'])) {
+            if (!isset($elementvalue['criteria'][$id]['score'])
+                    || $criterion['maxscore'] < $elementvalue['criteria'][$id]['score'] ) {
                 return false;
             }
         }
@@ -703,14 +703,14 @@ class gradingform_guide_instance extends gradingform_instance {
         foreach ($data['criteria'] as $criterionid => $record) {
             if (!array_key_exists($criterionid, $currentgrade['criteria'])) {
                 $newrecord = array('instanceid' => $this->get_id(), 'criterionid' => $criterionid,
-                    'levelid' => $record['levelid'], 'remarkformat' => FORMAT_MOODLE);
+                    'score' => $record['score'], 'remarkformat' => FORMAT_MOODLE);
                 if (isset($record['remark'])) {
                     $newrecord['remark'] = $record['remark'];
                 }
                 $DB->insert_record('gradingform_guide_fillings', $newrecord);
             } else {
                 $newrecord = array('id' => $currentgrade['criteria'][$criterionid]['id']);
-                foreach (array('levelid', 'remark'/*, 'remarkformat' TODO */) as $key) {
+                foreach (array('score', 'remark'/*, 'remarkformat' TODO */) as $key) {
                     if (isset($record[$key]) && $currentgrade['criteria'][$criterionid][$key] != $record[$key]) {
                         $newrecord[$key] = $record[$key];
                     }
@@ -750,8 +750,8 @@ class gradingform_guide_instance extends gradingform_instance {
         $maxgrade = $graderange[sizeof($graderange) - 1];
 
         $curscore = 0;
-        foreach ($grade['criteria'] as $id => $record) {
-            $curscore += $this->get_controller()->get_definition()->guide_criteria[$id]['levels'][$record['levelid']]['score'];
+        foreach ($grade['criteria'] as $record) {
+            $curscore += $record['score'];
         }
         return round(($curscore-$scores['minscore'])/($scores['maxscore']-$scores['minscore'])*($maxgrade-$mingrade), 0) + $mingrade;
     }
@@ -794,12 +794,12 @@ class gradingform_guide_instance extends gradingform_instance {
         if ($currentinstance) {
             $curfilling = $currentinstance->get_guide_filling();
             foreach ($curfilling['criteria'] as $criterionid => $curvalues) {
-                $value['criteria'][$criterionid]['savedlevelid'] = $curvalues['levelid'];
+                $value['criteria'][$criterionid]['score'] = $curvalues['score'];
                 $newremark = null;
-                $newlevelid = null;
+                $newscore = null;
                 if (isset($value['criteria'][$criterionid]['remark'])) $newremark = $value['criteria'][$criterionid]['remark'];
-                if (isset($value['criteria'][$criterionid]['levelid'])) $newlevelid = $value['criteria'][$criterionid]['levelid'];
-                if ($newlevelid != $curvalues['levelid'] || $newremark != $curvalues['remark']) {
+                if (isset($value['criteria'][$criterionid]['score'])) $newscore = $value['criteria'][$criterionid]['score'];
+                if ($newscore != $curvalues['score'] || $newremark != $curvalues['remark']) {
                     $haschanges = true;
                 }
             }

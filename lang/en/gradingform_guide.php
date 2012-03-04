@@ -55,7 +55,10 @@ $string['guidemapping'] = 'Score to grade mapping rules';
 $string['guidemappingexplained'] = 'The maximum score <b>{$a->maxscore} points</b> will be converted to the maximum grade.<br />
     Intermediate scores will be converted respectively and rounded to the nearest available grade.<br />
     If a scale is used instead of a grade, the score will be converted to the scale elements as if they were consecutive integers.';
+$string['guidenotcompleted'] = 'Please provide a valid grade for each criterion';
 $string['maxscore'] = 'Maximum mark';
+$string['restoredfromdraft'] = 'NOTE: The last attempt to grade this person was not saved properly so draft grades have been restored. If you want to cancel these changes use the \'Cancel\' button below.';
 $string['save'] = 'Save';
 $string['saveguide'] = 'Save marking guide and make it ready';
 $string['saveguidedraft'] = 'Save as draft';
+$string['score'] = 'score';
