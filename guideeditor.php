@@ -62,6 +62,17 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
     }
 
     /**
+     * Specifies that confirmation about re-grading needs to be added to this rubric editor.
+     * $changelevel is saved in $this->regradeconfirmation and retrieved in toHtml()
+     *
+     * @see gradingform_rubric_controller::update_or_check_rubric()
+     * @param int $changelevel
+     */
+    public function add_regrade_confirmation($changelevel) {
+        $this->regradeconfirmation = $changelevel;
+    }
+
+    /**
      * Returns html string to display this element
      *
      * @return string

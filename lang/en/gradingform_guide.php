@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['addcriterion'] = 'Add criterion';
 $string['addcomment'] = 'Add Frequently used comment';
+$string['backtoediting'] = 'Back to editing';
 $string['err_nodescription'] = 'Student description can not be empty';
 $string['err_nodescriptionmarkers'] = 'Marker description can not be empty';
 $string['err_noshortname'] = 'Criterion name can not be empty';
@@ -57,6 +58,10 @@ $string['guidemappingexplained'] = 'The maximum score <b>{$a->maxscore} points<
     If a scale is used instead of a grade, the score will be converted to the scale elements as if they were consecutive integers.';
 $string['guidenotcompleted'] = 'Please provide a valid grade for each criterion';
 $string['maxscore'] = 'Maximum mark';
+$string['regrademessage1'] = 'You are about to save changes to a marking guide that has already been used for grading. Please indicate if existing grades need to be reviewed. If you set this then the marking guide will be hidden from students until their item is regraded.';
+$string['regrademessage5'] = 'You are about to save significant changes to a marking guide that has already been used for grading. The gradebook value will be unchanged, but the marking guide will be hidden from students until their item is regraded.';
+$string['regradeoption0'] = 'Do not mark for regrade';
+$string['regradeoption1'] = 'Mark for regrade';
 $string['restoredfromdraft'] = 'NOTE: The last attempt to grade this person was not saved properly so draft grades have been restored. If you want to cancel these changes use the \'Cancel\' button below.';
 $string['save'] = 'Save';
 $string['saveguide'] = 'Save marking guide and make it ready';

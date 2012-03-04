@@ -53,7 +53,7 @@ class gradingform_guide_editguide extends moodleform {
 
         // description
         $options = gradingform_guide_controller::description_form_field_options($this->_customdata['context']);
-        $form->addElement('editor', 'description_editor', get_string('description', 'gradingform_guide'), null, $options);
+        $form->addElement('editor', 'description_editor', get_string('descriptionstudents', 'gradingform_guide'), null, $options);
         $form->setType('description_editor', PARAM_RAW);
 
         // guide completion status

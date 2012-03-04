@@ -402,6 +402,53 @@ class gradingform_guide_renderer extends plugin_renderer_base {
         return $class;
     }
 
+    /**
+     * Displays for the student the list of instances or default content if no instances found
+     *
+     * @param array $instances array of objects of type gradingform_rubric_instance
+     * @param string $defaultcontent default string that would be displayed without advanced grading
+     * @param boolean $cangrade whether current user has capability to grade in this context
+     * @return string
+     */
+    public function display_instances($instances, $defaultcontent, $cangrade) {
+        $return = '';
+        if (sizeof($instances)) {
+            $return .= html_writer::start_tag('div', array('class' => 'advancedgrade'));
+            $idx = 0;
+            foreach ($instances as $instance) {
+                $return .= $this->display_instance($instance, $idx++, $cangrade);
+            }
+            $return .= html_writer::end_tag('div');
+        }
+        return $return. $defaultcontent;
+    }
+
+    /**
+     * Displays one grading instance
+     *
+     * @param gradingform_rubric_instance $instance
+     * @param int idx unique number of instance on page
+     * @param boolean $cangrade whether current user has capability to grade in this context
+     */
+    public function display_instance(gradingform_guide_instance $instance, $idx, $cangrade) {
+        $criteria = $instance->get_controller()->get_definition()->guide_criteria;
+        $options = $instance->get_controller()->get_options();
+        $values = $instance->get_guide_filling();
+        if ($cangrade) {
+            $mode = gradingform_guide_controller::DISPLAY_REVIEW;
+            $showdescription = $options['showdescriptionteacher'];
+        } else {
+            $mode = gradingform_guide_controller::DISPLAY_VIEW;
+            $showdescription = $options['showdescriptionstudent'];
+        }
+        $output = '';
+       // if ($showdescription) {
+            $output .= $this->box($instance->get_controller()->get_formatted_description(), 'gradingform_guide-description');
+        //}
+        $output .= $this->display_guide($criteria, $options, array(), $mode, 'guide'.$idx, $values);
+        return $output;
+    }
+
 
     public function display_regrade_confirmation($elementname, $changelevel, $value) {
         $html = html_writer::start_tag('div', array('class' => 'gradingform_guide-regrade'));
