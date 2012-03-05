@@ -144,6 +144,15 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
             }
         }
 
+        if (is_array($value)) {
+            // for other array keys of $value no special treatmeant neeeded, copy them to return value as is
+            foreach (array_keys($value) as $key) {
+                if ($key != 'options' && $key != 'criteria') {
+                    $return[$key] = $value[$key];
+                }
+            }
+        }
+
         // iterate through criteria
         $lastaction = null;
         $lastid = null;

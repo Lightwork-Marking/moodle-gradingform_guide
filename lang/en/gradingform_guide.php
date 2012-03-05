@@ -58,6 +58,7 @@ $string['guidemappingexplained'] = 'The maximum score <b>{$a->maxscore} points<
     If a scale is used instead of a grade, the score will be converted to the scale elements as if they were consecutive integers.';
 $string['guidenotcompleted'] = 'Please provide a valid grade for each criterion';
 $string['maxscore'] = 'Maximum mark';
+$string['needregrademessage'] = 'The marking guide definition was changed after this student had been graded. The student can not see this marking guide until you check the marking guide and update the grade.';
 $string['regrademessage1'] = 'You are about to save changes to a marking guide that has already been used for grading. Please indicate if existing grades need to be reviewed. If you set this then the marking guide will be hidden from students until their item is regraded.';
 $string['regrademessage5'] = 'You are about to save significant changes to a marking guide that has already been used for grading. The gradebook value will be unchanged, but the marking guide will be hidden from students until their item is regraded.';
 $string['regradeoption0'] = 'Do not mark for regrade';
