@@ -290,7 +290,7 @@ class gradingform_guide_controller extends gradingform_controller {
              LEFT JOIN {gradingform_guide_criteria} rc ON (rc.definitionid = gd.id)
              LEFT JOIN {gradingform_guide_faq} rf ON (rf.definitionid = gd.id)
                  WHERE gd.areaid = :areaid AND gd.method = :method
-              ORDER BY rc.sortorder";
+              ORDER BY rc.sortorder, rf.sortorder";
         $params = array('areaid' => $this->areaid, 'method' => $this->get_method_name());
 
         $rs = $DB->get_recordset_sql($sql, $params);

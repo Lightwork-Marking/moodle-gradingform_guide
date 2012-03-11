@@ -84,6 +84,18 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
         $data = $this->prepare_data(null, $this->wasvalidated);
         if (!$this->_flagFrozen) {
             $mode = gradingform_guide_controller::DISPLAY_EDIT_FULL;
+            $module = array('name'=>'gradingform_guideeditor',
+                'fullpath'=>'/grade/grading/form/guide/js/guideeditor.js',
+                'strings' => array(
+                    array('confirmdeletecriterion', 'gradingform_guide'),
+                    array('clicktoedit', 'gradingform_guide')
+            ));
+            $PAGE->requires->js_init_call('M.gradingform_guideeditor.init', array(
+                array('name' => $this->getName(),
+                    'criteriontemplate' => $renderer->criterion_template($mode, $data['options'], $this->getName()),
+                    'commenttemplate' => $renderer->comment_template($mode, $this->getName())
+                   )),
+                true, $module);
         } else {
             // guide is frozen, no javascript needed
             if ($this->_persistantFreeze) {
@@ -147,7 +159,7 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
         if (is_array($value)) {
             // for other array keys of $value no special treatmeant neeeded, copy them to return value as is
             foreach (array_keys($value) as $key) {
-                if ($key != 'options' && $key != 'criteria') {
+                if ($key != 'options' && $key != 'criteria' && $key != 'comments') {
                     $return[$key] = $value[$key];
                 }
             }
@@ -170,15 +182,18 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
                 }
                 if (!strlen(trim($criterion['descriptionmarkers']))) {
                     $errors['err_nodescriptionmarkers'] = 1;
-                    $criterion['error_descriptionmarkers'] = true;
+                    $criterion['error_description'] = true;
                 }
                 if (!strlen(trim($criterion['shortname']))) {
                     $errors['err_noshortname'] = 1;
-                    $criterion['error_shortname'] = true;
+                    $criterion['error_description'] = true;
                 }
                 if (!strlen(trim($criterion['maxscore']))) {
                     $errors['err_nomaxscore'] = 1;
-                    $criterion['error_maxscore'] = true;
+                    $criterion['error_description'] = true;
+                } elseif (!is_numeric($criterion['maxscore'])) {
+                    $errors['err_maxscorenotnumeric'] = 1;
+                    $criterion['error_description'] = true;
                 }
             }
             if (array_key_exists('moveup', $criterion) || $lastaction == 'movedown') {
@@ -217,48 +232,50 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
         //iterate through comments
         $lastaction = null;
         $lastid = null;
-        foreach ($value['comments'] as $id => $comment) {
-            if ($id == 'addcomment') {
-                $id = $this->get_next_id(array_keys($value['comments']));
-                $comment = array('description' => '');
-                $this->nonjsbuttonpressed = true;
-            }
-
-            if ($withvalidation && !array_key_exists('delete', $comment)) {
-                if (!strlen(trim($comment['description']))) {
-                    $errors['err_nodescription'] = 1;
-                    $comment['error_description'] = true;
-                }
-            }
-            if (array_key_exists('moveup', $comment) || $lastaction == 'movedown') {
-                unset($comment['moveup']);
-                if ($lastid !== null) {
-                    $lastcomment = $return['comments'][$lastid];
-                    unset($return['comments'][$lastid]);
-                    $return['comments'][$id] = $comment;
-                    $return['comments'][$lastid] = $lastcomment;
-                } else {
-                    $return['comments'][$id] = $comment;
-                }
-                $lastaction = null;
-                $lastid = $id;
-                $this->nonjsbuttonpressed = true;
-            } else if (array_key_exists('delete', $comment)) {
-                $this->nonjsbuttonpressed = true;
-            } else {
-                if (array_key_exists('movedown', $comment)) {
-                    unset($comment['movedown']);
-                    $lastaction = 'movedown';
+        if (!empty($value['comments'])) {
+            foreach ($value['comments'] as $id => $comment) {
+                if ($id == 'addcomment') {
+                    $id = $this->get_next_id(array_keys($value['comments']));
+                    $comment = array('description' => '');
                     $this->nonjsbuttonpressed = true;
                 }
-                $return['comments'][$id] = $comment;
-                $lastid = $id;
+
+                if ($withvalidation && !array_key_exists('delete', $comment)) {
+                    if (!strlen(trim($comment['description']))) {
+                        $errors['err_nocomment'] = 1;
+                        $comment['error_description'] = true;
+                    }
+                }
+                if (array_key_exists('moveup', $comment) || $lastaction == 'movedown') {
+                    unset($comment['moveup']);
+                    if ($lastid !== null) {
+                        $lastcomment = $return['comments'][$lastid];
+                        unset($return['comments'][$lastid]);
+                        $return['comments'][$id] = $comment;
+                        $return['comments'][$lastid] = $lastcomment;
+                    } else {
+                        $return['comments'][$id] = $comment;
+                    }
+                    $lastaction = null;
+                    $lastid = $id;
+                    $this->nonjsbuttonpressed = true;
+                } else if (array_key_exists('delete', $comment)) {
+                    $this->nonjsbuttonpressed = true;
+                } else {
+                    if (array_key_exists('movedown', $comment)) {
+                        unset($comment['movedown']);
+                        $lastaction = 'movedown';
+                        $this->nonjsbuttonpressed = true;
+                    }
+                    $return['comments'][$id] = $comment;
+                    $lastid = $id;
+                }
             }
-        }
-        // add sort order field to comments
-        $csortorder = 1;
-        foreach (array_keys($return['comments']) as $id) {
-            $return['comments'][$id]['sortorder'] = $csortorder++;
+            // add sort order field to comments
+            $csortorder = 1;
+            foreach (array_keys($return['comments']) as $id) {
+                $return['comments'][$id]['sortorder'] = $csortorder++;
+            }
         }
         // create validation error string (if needed)
         if ($withvalidation) {
@@ -296,7 +313,7 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
     /**
      * Checks if a submit button was pressed which is supposed to be processed on client side by JS
      * but user seem to have disabled JS in the browser.
-     * (buttons 'add criteria', 'add level', 'move up', 'move down', etc.)
+     * (buttons 'add criteria', 'add level', 'move up', 'move down', 'add comment')
      * In this case the form containing this element is prevented from being submitted
      *
      * @param array $value
@@ -310,7 +327,7 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
     }
 
     /**
-     * Validates that rubric has at least one criterion, filled definitions and all criteria
+     * Validates that guide has at least one criterion, filled definitions and all criteria
      * have filled descriptions
      *
      * @param array $value
