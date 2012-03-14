@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -72,4 +71,5 @@ $string['restoredfromdraft'] = 'NOTE: The last attempt to grade this person was 
 $string['save'] = 'Save';
 $string['saveguide'] = 'Save marking guide and make it ready';
 $string['saveguidedraft'] = 'Save as draft';
+$string['showdescriptionstudent'] = 'Display description to those being graded';
 $string['score'] = 'score';

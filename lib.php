@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -83,8 +82,8 @@ class gradingform_guide_controller extends gradingform_controller {
         }
         if ($this->is_form_defined() && ($options = $this->get_options()) && !empty($options['alwaysshowdefinition'])) {
             $node->add(get_string('gradingof', 'gradingform_guide', get_grading_manager($this->get_areaid())->get_area_title()),
-                    new moodle_url('/grade/grading/form/'.$this->get_method_name().'/preview.php', array('areaid' => $this->get_areaid())),
-                    settings_navigation::TYPE_CUSTOM);
+                    new moodle_url('/grade/grading/form/'.$this->get_method_name().'/preview.php',
+                        array('areaid' => $this->get_areaid())), settings_navigation::TYPE_CUSTOM);
         }
     }
 
@@ -108,7 +107,7 @@ class gradingform_guide_controller extends gradingform_controller {
      * 0 - no changes
      * 1 - only texts or criteria sortorders are changed, students probably do not require re-grading
      * 2 - added levels but maximum score on guide is the same, students still may not require re-grading
-     * 3 - removed criteria or added levels or changed number of points, students require re-grading but may be re-graded automatically
+     * 3 - removed criteria or changed number of points, students require re-grading but may be re-graded automatically
      * 4 - removed levels - students require re-grading and not all students may be re-graded automatically
      * 5 - added criteria - all students require manual re-grading
      *
@@ -150,12 +149,14 @@ class gradingform_guide_controller extends gradingform_controller {
             $newcriteria = $newdefinition->guide['criteria']; // new ones to be saved
         }
         $currentcriteria = $currentdefinition->guide_criteria;
-        $criteriafields = array('sortorder', 'description', 'descriptionformat', 'descriptionmarkers', 'descriptionmarkersformat', 'shortname', 'maxscore');
+        $criteriafields = array('sortorder', 'description', 'descriptionformat', 'descriptionmarkers',
+            'descriptionmarkersformat', 'shortname', 'maxscore');
         foreach ($newcriteria as $id => $criterion) {
             $criterionmaxscore = null;
             if (preg_match('/^NEWID\d+$/', $id)) {
                 // insert criterion into DB
-                $data = array('definitionid' => $this->definition->id, 'descriptionformat' => FORMAT_MOODLE, 'descriptionmarkersformat' => FORMAT_MOODLE); // TODO format is not supported yet
+                $data = array('definitionid' => $this->definition->id, 'descriptionformat' => FORMAT_MOODLE,
+                    'descriptionmarkersformat' => FORMAT_MOODLE); // TODO format is not supported yet
                 foreach ($criteriafields as $key) {
                     if (array_key_exists($key, $criterion)) {
                         $data[$key] = $criterion[$key];
@@ -203,7 +204,7 @@ class gradingform_guide_controller extends gradingform_controller {
         foreach ($newcomment as $id => $comment) {
             if (preg_match('/^NEWID\d+$/', $id)) {
                 // insert criterion into DB
-                $data = array('definitionid' => $this->definition->id, 'descriptionformat' => FORMAT_MOODLE); // TODO format is not supported yet
+                $data = array('definitionid' => $this->definition->id, 'descriptionformat' => FORMAT_MOODLE);
                 foreach ($commentfields as $key) {
                     if (array_key_exists($key, $comment)) {
                         $data[$key] = $comment[$key];
@@ -282,10 +283,11 @@ class gradingform_guide_controller extends gradingform_controller {
     protected function load_definition() {
         global $DB;
         $sql = "SELECT gd.*,
-                       rc.id AS rcid, rc.sortorder AS rcsortorder, rc.description AS rcdescription, rc.descriptionformat AS rcdescriptionformat,
-                       rc.descriptionmarkers AS rcdescriptionmarkers, rc.descriptionmarkersformat AS rcdescriptionmarkersformat, rc.shortname AS rcshortname,
-                       rc.maxscore AS rcmaxscore,
-                       rf.id as rfid, rf.sortorder AS rfsortorder, rf.description AS rfdescription, rf.descriptionformat AS rfdescriptionformat
+                       rc.id AS rcid, rc.sortorder AS rcsortorder, rc.description AS rcdescription,
+                       rc.descriptionformat AS rcdescriptionformat, rc.descriptionmarkers AS rcdescriptionmarkers,
+                       rc.descriptionmarkersformat AS rcdescriptionmarkersformat, rc.shortname AS rcshortname,
+                       rc.maxscore AS rcmaxscore, rf.id as rfid, rf.sortorder AS rfsortorder,
+                       rf.description AS rfdescription, rf.descriptionformat AS rfdescriptionformat
                   FROM {grading_definitions} gd
              LEFT JOIN {gradingform_guide_criteria} rc ON (rc.definitionid = gd.id)
              LEFT JOIN {gradingform_guide_faq} rf ON (rf.definitionid = gd.id)
@@ -503,7 +505,8 @@ class gradingform_guide_controller extends gradingform_controller {
         // delete instances
         $DB->delete_records_list('grading_instances', 'id', $instances);
         // get the list of criteria records
-        $criteria = array_keys($DB->get_records('gradingform_guide_criteria', array('definitionid' => $this->definition->id), '', 'id'));
+        $criteria = array_keys($DB->get_records('gradingform_guide_criteria',
+            array('definitionid' => $this->definition->id), '', 'id'));
         // delete critera
         $DB->delete_records_list('gradingform_guide_criteria', 'id', $criteria);
     }
@@ -522,11 +525,13 @@ class gradingform_guide_controller extends gradingform_controller {
     public function get_or_create_instance($instanceid, $raterid, $itemid) {
         global $DB;
         if ($instanceid &&
-                $instance = $DB->get_record('grading_instances', array('id'  => $instanceid, 'raterid' => $raterid, 'itemid' => $itemid), '*', IGNORE_MISSING)) {
+                $instance = $DB->get_record('grading_instances',
+                    array('id'  => $instanceid, 'raterid' => $raterid, 'itemid' => $itemid), '*', IGNORE_MISSING)) {
             return $this->get_instance($instance);
         }
         if ($itemid && $raterid) {
-            if ($rs = $DB->get_records('grading_instances', array('raterid' => $raterid, 'itemid' => $itemid), 'timemodified DESC', '*', 0, 1)) {
+            if ($rs = $DB->get_records('grading_instances', array('raterid' => $raterid, 'itemid' => $itemid),
+                'timemodified DESC', '*', 0, 1)) {
                 $record = reset($rs);
                 $currentinstance = $this->get_current_instance($raterid, $itemid);
                 if ($record->status == gradingform_guide_instance::INSTANCE_STATUS_INCOMPLETE &&
@@ -659,7 +664,8 @@ class gradingform_guide_instance extends gradingform_instance {
      */
     public function validate_grading_element($elementvalue) {
         $criteria = $this->get_controller()->get_definition()->guide_criteria;
-        if (!isset($elementvalue['criteria']) || !is_array($elementvalue['criteria']) || sizeof($elementvalue['criteria']) < sizeof($criteria)) {
+        if (!isset($elementvalue['criteria']) || !is_array($elementvalue['criteria']) ||
+            count($elementvalue['criteria']) < count($criteria)) {
             return false;
         }
         foreach ($criteria as $id => $criterion) {
@@ -747,13 +753,14 @@ class gradingform_guide_instance extends gradingform_instance {
         }
         sort($graderange);
         $mingrade = $graderange[0];
-        $maxgrade = $graderange[sizeof($graderange) - 1];
+        $maxgrade = $graderange[count($graderange) - 1];
 
         $curscore = 0;
         foreach ($grade['criteria'] as $record) {
             $curscore += $record['score'];
         }
-        return round(($curscore-$scores['minscore'])/($scores['maxscore']-$scores['minscore'])*($maxgrade-$mingrade), 0) + $mingrade;
+        return round(($curscore-$scores['minscore'])/($scores['maxscore']-$scores['minscore'])*
+            ($maxgrade-$mingrade), 0) + $mingrade;
     }
 
     /**
@@ -784,11 +791,13 @@ class gradingform_guide_instance extends gradingform_instance {
         if ($value === null) {
             $value = $this->get_guide_filling();
         } else if (!$this->validate_grading_element($value)) {
-            $html .= html_writer::tag('div', get_string('guidenotcompleted', 'gradingform_guide'), array('class' => 'gradingform_guide-error'));
+            $html .= html_writer::tag('div', get_string('guidenotcompleted', 'gradingform_guide'),
+                array('class' => 'gradingform_guide-error'));
         }
         $currentinstance = $this->get_current_instance();
         if ($currentinstance && $currentinstance->get_status() == gradingform_instance::INSTANCE_STATUS_NEEDUPDATE) {
-            $html .= html_writer::tag('div', get_string('needregrademessage', 'gradingform_guide'), array('class' => 'gradingform_guide-regrade'));
+            $html .= html_writer::tag('div', get_string('needregrademessage', 'gradingform_guide'),
+                array('class' => 'gradingform_guide-regrade'));
         }
         $haschanges = false;
         if ($currentinstance) {
@@ -805,12 +814,15 @@ class gradingform_guide_instance extends gradingform_instance {
             }
         }
         if ($this->get_data('isrestored') && $haschanges) {
-            $html .= html_writer::tag('div', get_string('restoredfromdraft', 'gradingform_guide'), array('class' => 'gradingform_guide-restored'));
+            $html .= html_writer::tag('div', get_string('restoredfromdraft', 'gradingform_guide'),
+                array('class' => 'gradingform_guide-restored'));
         }
         if (!empty($options['showdescriptionteacher'])) {
-            $html .= html_writer::tag('div', $this->get_controller()->get_formatted_description(), array('class' => 'gradingform_guide-description'));
+            $html .= html_writer::tag('div', $this->get_controller()->get_formatted_description(),
+                array('class' => 'gradingform_guide-description'));
         }
-        $html .= $this->get_controller()->get_renderer($page)->display_guide($criteria, $comments, $options, $mode, $gradingformelement->getName(), $value);
+        $html .= $this->get_controller()->get_renderer($page)->display_guide($criteria, $comments, $options, $mode,
+            $gradingformelement->getName(), $value);
         return $html;
     }
 }

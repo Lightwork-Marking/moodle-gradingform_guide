@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -44,7 +43,8 @@ $PAGE->set_url(new moodle_url('/grade/grading/form/guide/edit.php', array('areai
 $PAGE->set_title(get_string('definemarkingguide', 'gradingform_guide'));
 $PAGE->set_heading(get_string('definemarkingguide', 'gradingform_guide'));
 
-$mform = new gradingform_guide_editguide(null, array('areaid' => $areaid, 'context' => $context, 'allowdraft' => !$controller->has_active_instances()), 'post', '', array('class' => 'gradingform_guide_editform'));
+$mform = new gradingform_guide_editguide(null, array('areaid' => $areaid, 'context' => $context,
+    'allowdraft' => !$controller->has_active_instances()), 'post', '', array('class' => 'gradingform_guide_editform'));
 $data = $controller->get_definition_for_editing(true);
 
 $returnurl = optional_param('returnurl', $manager->get_management_url(), PARAM_LOCALURL);

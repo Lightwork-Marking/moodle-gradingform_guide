@@ -202,7 +202,7 @@ M.gradingform_guideeditor.buttonclick = function(e, confirmed) {
 // properly set classes (first/last/odd/even) and/or criterion sortorder for elements Y.all(elements_str)
 M.gradingform_guideeditor.assignclasses = function (elements_str) {
     var elements = M.gradingform_guideeditor.Y.all(elements_str)
-    for (var i=0;i<elements.size();i++) {
+    for (var i=0; i<elements.size(); i++) {
         elements.item(i).removeClass('first').removeClass('last').removeClass('even').removeClass('odd').
             addClass(((i%2)?'odd':'even') + ((i==0)?' first':'') + ((i==elements.size()-1)?' last':''))
         elements.item(i).all('input[type=hidden]').each(

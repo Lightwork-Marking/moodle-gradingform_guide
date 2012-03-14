@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("HTML/QuickForm/input.php");
 
-class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
+class moodlequickform_guideeditor extends HTML_QuickForm_input {
     /** help message */
     public $_helpbutton = '';
     /** stores the result of the last validation: null - undefined, false - no errors, string - error(s) text */
@@ -38,8 +37,8 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
     /** Message to display in front of the editor (that there exist grades on this guide being edited) */
     protected $regradeconfirmation = false;
 
-    function MoodleQuickForm_guideeditor($elementName=null, $elementLabel=null, $attributes=null) {
-        parent::HTML_QuickForm_input($elementName, $elementLabel, $attributes);
+    function moodlequickform_guideeditor($elementname=null, $elementlabel=null, $attributes=null) {
+        parent::HTML_QuickForm_input($elementname, $elementlabel, $attributes);
     }
 
     /**
@@ -138,7 +137,8 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
         }
 
         $errors = array();
-        $return = array('criteria' => array(), 'options' => gradingform_guide_controller::get_default_options(), 'comments' => array());
+        $return = array('criteria' => array(), 'options' => gradingform_guide_controller::get_default_options(),
+            'comments' => array());
         if (!isset($value['criteria'])) {
             $value['criteria'] = array();
             $errors['err_nocriteria'] = 1;
@@ -191,7 +191,7 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
                 if (!strlen(trim($criterion['maxscore']))) {
                     $errors['err_nomaxscore'] = 1;
                     $criterion['error_description'] = true;
-                } elseif (!is_numeric($criterion['maxscore'])) {
+                } else if (!is_numeric($criterion['maxscore'])) {
                     $errors['err_maxscorenotnumeric'] = 1;
                     $criterion['error_description'] = true;
                 }
@@ -221,7 +221,6 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
                 $lastid = $id;
             }
         }
-
 
         // add sort order field to criteria
         $csortorder = 1;
@@ -348,8 +347,8 @@ class MoodleQuickForm_guideeditor extends HTML_QuickForm_input {
      * @param boolean $assoc
      * @return array
      */
-    public function exportValue(&$submitValues, $assoc = false) {
-        $value =  $this->prepare_data($this->_findValue($submitValues));
+    public function exportValue(&$submitvalues, $assoc = false) {
+        $value =  $this->prepare_data($this->_findValue($submitvalues));
         return $this->_prepareValue($value, $assoc);
     }
 }

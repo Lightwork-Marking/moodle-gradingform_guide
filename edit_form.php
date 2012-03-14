@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -28,7 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/lib/formslib.php');
 require_once(dirname(__FILE__).'/guideeditor.php');
-MoodleQuickForm::registerElementType('guideeditor', $CFG->dirroot.'/grade/grading/form/guide/guideeditor.php', 'MoodleQuickForm_guideeditor');
+MoodleQuickForm::registerElementType('guideeditor', $CFG->dirroot.'/grade/grading/form/guide/guideeditor.php',
+    'moodlequickform_guideeditor');
 
 /**
  * Defines the guide edit form
@@ -58,8 +58,10 @@ class gradingform_guide_editguide extends moodleform {
 
         // guide completion status
         $choices = array();
-        $choices[gradingform_controller::DEFINITION_STATUS_DRAFT]    = html_writer::tag('span', get_string('statusdraft', 'core_grading'), array('class' => 'status draft'));
-        $choices[gradingform_controller::DEFINITION_STATUS_READY]    = html_writer::tag('span', get_string('statusready', 'core_grading'), array('class' => 'status ready'));
+        $choices[gradingform_controller::DEFINITION_STATUS_DRAFT]    = html_writer::tag('span',
+            get_string('statusdraft', 'core_grading'), array('class' => 'status draft'));
+        $choices[gradingform_controller::DEFINITION_STATUS_READY]    = html_writer::tag('span',
+            get_string('statusready', 'core_grading'), array('class' => 'status ready'));
         $form->addElement('select', 'status', get_string('guidestatus', 'gradingform_guide'), $choices)->freeze();
 
         // guide editor
@@ -96,7 +98,7 @@ class gradingform_guide_editguide extends moodleform {
         } else {
             $vals = array_values($el->getValue());
             if ($vals[0] == gradingform_controller::DEFINITION_STATUS_READY) {
-                $this->findButton('saveguide')->setValue(get_string('save', 'gradingform_guide'));
+                $this->findbutton('saveguide')->setValue(get_string('save', 'gradingform_guide'));
             }
         }
     }
@@ -187,8 +189,8 @@ class gradingform_guide_editguide extends moodleform {
         }
 
         // replace button text 'saveguide' and unfreeze 'Back to edit' button
-        $this->findButton('saveguide')->setValue(get_string('continue'));
-        $el =& $this->findButton('editguide');
+        $this->findbutton('saveguide')->setValue(get_string('continue'));
+        $el =& $this->findbutton('editguide');
         $el->setValue(get_string('backtoediting', 'gradingform_guide'));
         $el->unfreeze();
 
@@ -201,7 +203,7 @@ class gradingform_guide_editguide extends moodleform {
      * @param string $elementname
      * @return HTML_QuickForm_element
      */
-    protected function &findButton($elementname) {
+    protected function &findbutton($elementname) {
         $form = $this->_form;
         $buttonar =& $form->getElement('buttonar');
         $elements =& $buttonar->getElements();
