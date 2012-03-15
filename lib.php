@@ -312,7 +312,11 @@ class gradingform_guide_controller extends gradingform_controller {
             if (!empty($record->rcid) and empty($this->definition->guide_criteria[$record->rcid])) {
                 foreach (array('id', 'sortorder', 'description', 'descriptionformat',
                                'maxscore', 'descriptionmarkers', 'descriptionmarkersformat', 'shortname') as $fieldname) {
-                    $this->definition->guide_criteria[$record->rcid][$fieldname] = $record->{'rc'.$fieldname};
+                    if ($fieldname == 'maxscore') {
+                        $this->definition->guide_criteria[$record->rcid][$fieldname] = (float)$record->{'rc'.$fieldname}; //strip any trailing 0
+                    } else {
+                        $this->definition->guide_criteria[$record->rcid][$fieldname] = $record->{'rc'.$fieldname};
+                    }
                 }
             }
             // pick the comment data
@@ -689,6 +693,7 @@ class gradingform_guide_instance extends gradingform_instance {
             $records = $DB->get_records('gradingform_guide_fillings', array('instanceid' => $this->get_id()));
             $this->guide = array('criteria' => array());
             foreach ($records as $record) {
+                $record->score = (float)$record->score; //strip trailing 0
                 $this->guide['criteria'][$record->criterionid] = (array)$record;
             }
         }
