@@ -132,10 +132,11 @@ class gradingform_guide_renderer extends plugin_renderer_base {
         $title = $shortname.'<br>';
         if ($mode == gradingform_guide_controller::DISPLAY_EDIT_FULL) {
             $title .= $description.'<br>'.$descriptionmarkers.'<br>'.$maxscore;
-        } else if ($displayremark) {
-            $title .= $descriptionmarkers.'<br>';
-        } else {
+        } else if ($mode == gradingform_guide_controller::DISPLAY_PREVIEW_GRADED ||
+                   $mode == gradingform_guide_controller::DISPLAY_VIEW) {
             $title .= $description.'<br>';
+        } else {
+            $title .= $descriptionmarkers.'<br>';
         }
         $criteriontemplate .= html_writer::tag('td', $title, array('class' => $descriptionclass,
             'id' => '{NAME}-criteria-{CRITERION-id}-shortname'));
