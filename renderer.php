@@ -168,6 +168,9 @@ class gradingform_guide_renderer extends plugin_renderer_base {
             } else if ($mode == gradingform_guide_controller::DISPLAY_REVIEW ||
                 $mode == gradingform_guide_controller::DISPLAY_VIEW) {
                 $criteriontemplate .= html_writer::tag('td', $currentremark, array('class' => 'remark'));
+                if (!empty($options['showmarkspercriterionstudents'])) {
+                    $criteriontemplate .= html_writer::tag('td', htmlspecialchars($currentscore). ' / '.$maxscore, array('class' => 'score'));
+                }
             }
         }
         $criteriontemplate .= html_writer::end_tag('tr'); // .criterion
@@ -503,7 +506,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
         }
 
         $output = $this->box($instance->get_controller()->get_formatted_description(), 'gradingform_guide-description').
-                  $this->display_guide($criteria, $options, array(), $mode, 'guide'.$idx, $values);
+                  $this->display_guide($criteria, array(), $options, $mode, 'guide'.$idx, $values);
         return $output;
     }
 
