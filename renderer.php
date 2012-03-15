@@ -151,7 +151,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
             }
             if ($mode == gradingform_guide_controller::DISPLAY_EVAL) {
                 $input = html_writer::tag('textarea', htmlspecialchars($currentremark),
-                    array('name' => '{NAME}[criteria][{CRITERION-id}][remark]', 'cols' => '10', 'rows' => '5',
+                    array('name' => '{NAME}[criteria][{CRITERION-id}][remark]', 'cols' => '45', 'rows' => '5',
                           'class' => 'markingguideremark'));
                 $criteriontemplate .= html_writer::tag('td', $input, array('class' => 'remark'));
                 $score = html_writer::tag('label', get_string('score', 'gradingform_guide'),
