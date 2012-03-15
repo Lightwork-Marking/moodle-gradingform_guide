@@ -239,7 +239,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
             }
             if ($mode == gradingform_guide_controller::DISPLAY_EVAL) {
                 $description = html_writer::tag('span', htmlspecialchars($comment['description']),
-                    array('name' => '{NAME}[comments][{COMMENT-id}][description]',
+                    array('name' => '{NAME}[comments][{COMMENT-id}][description]', 'title' => get_string('clicktocopy', 'gradingform_guide'),
                           'id' => '{NAME}[comments][{COMMENT-id}]', 'class'=>'markingguidecomment'));
             } else {
                 $description = $comment['description'];

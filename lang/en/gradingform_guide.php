@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 $string['addcriterion'] = 'Add criterion';
 $string['addcomment'] = 'Add Frequently used comment';
 $string['backtoediting'] = 'Back to editing';
+$string['clicktocopy'] = 'Click to copy this text into the criteria feedback';
 $string['confirmdeletecriterion'] = 'Are you sure you want to delete this item?';
 $string['confirmdeletelevel'] = 'Are you sure you want to delete this level?';
 $string['err_nocomment'] = 'Comment can not be empty';

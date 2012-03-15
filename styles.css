@@ -50,3 +50,5 @@
 /* special classes for elements created by guideeditor.js */
 .gradingform_guide.editor .hiddenelement {display:none;}
 .gradingform_guide.editor .pseudotablink {background-color:transparent;border:0 solid;height:1px;width:1px;color:transparent;padding:0;margin:0;position:relative;float:right;}
+
+.gradingform_guide .markingguidecomment {cursor: pointer;}
