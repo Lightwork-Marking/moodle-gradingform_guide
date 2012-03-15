@@ -773,8 +773,8 @@ class gradingform_guide_instance extends gradingform_instance {
     public function render_grading_element($page, $gradingformelement) {
         global $USER;
         if (!$gradingformelement->_flagFrozen) {
-          //  $module = array('name'=>'gradingform_guide', 'fullpath'=>'/grade/grading/form/guide/js/guide.js');
-        //    $page->requires->js_init_call('M.gradingform_guide.init', array(array('name' => $gradingformelement->getName())), true, $module);
+            $module = array('name'=>'gradingform_guide', 'fullpath'=>'/grade/grading/form/guide/js/guide.js');
+            $page->requires->js_init_call('M.gradingform_guide.init', array(array('name' => $gradingformelement->getName())), true, $module);
             $mode = gradingform_guide_controller::DISPLAY_EVAL;
         } else {
             if ($gradingformelement->_persistantFreeze) {
