@@ -52,3 +52,4 @@
 .gradingform_guide.editor .pseudotablink {background-color:transparent;border:0 solid;height:1px;width:1px;color:transparent;padding:0;margin:0;position:relative;float:right;}
 
 .gradingform_guide .markingguidecomment {cursor: pointer;}
+.gradingform_guide .commentheader  {font-weight:bold;font-size:1.1em;padding-bottom:5px;}

@@ -312,8 +312,11 @@ class gradingform_guide_renderer extends plugin_renderer_base {
             $guidetemplate .= html_writer::tag('div', $input, array('class' => 'addcriterion'));
         }
 
-        $guidetemplate .= html_writer::tag('label', get_string('comments'), array());
-        $guidetemplate .= html_writer::tag('table', $commentstr, array('class' => 'comments', 'id' => '{NAME}-comments'));
+        if (!empty($commentstr)) {
+            $guidetemplate .= html_writer::tag('label', get_string('comments', 'gradingform_guide'),
+                array('for' => '{NAME}-comments', 'class' => 'commentheader'));
+            $guidetemplate .= html_writer::tag('table', $commentstr, array('class' => 'comments', 'id' => '{NAME}-comments'));
+        }
         if ($mode == gradingform_guide_controller::DISPLAY_EDIT_FULL) {
             $value = get_string('addcomment', 'gradingform_guide');
             $input = html_writer::empty_tag('input', array('type' => 'submit', 'name' => '{NAME}[comments][addcomment]',
@@ -422,10 +425,18 @@ class gradingform_guide_renderer extends plugin_renderer_base {
             $criteriastr .= $this->criterion_template($mode, $options, $elementname, $criterion, $criterionvalue);
         }
         $cnt = 0;
-        foreach ($comments as $id => $comment) {
-            $comment['id'] = $id;
-            $comment['class'] = $this->get_css_class_suffix($cnt++, count($comments) -1);
-            $commentstr  .= $this->comment_template($mode, $elementname, $comment);
+        $commentstr = '';
+        //check if comments should be displayed
+        if ($mode == gradingform_guide_controller::DISPLAY_EDIT_FULL ||
+            $mode == gradingform_guide_controller::DISPLAY_PREVIEW ||
+            $mode == gradingform_guide_controller::DISPLAY_EVAL ||
+            $mode == gradingform_guide_controller::DISPLAY_EVAL_FROZEN) {
+
+            foreach ($comments as $id => $comment) {
+                $comment['id'] = $id;
+                $comment['class'] = $this->get_css_class_suffix($cnt++, count($comments) -1);
+                $commentstr  .= $this->comment_template($mode, $elementname, $comment);
+            }
         }
         return $this->guide_template($mode, $options, $elementname, $criteriastr, $commentstr);
     }
@@ -487,10 +498,8 @@ class gradingform_guide_renderer extends plugin_renderer_base {
         $values = $instance->get_guide_filling();
         if ($cangrade) {
             $mode = gradingform_guide_controller::DISPLAY_REVIEW;
-            $showdescription = $options['showdescriptionteacher'];
         } else {
             $mode = gradingform_guide_controller::DISPLAY_VIEW;
-            $showdescription = $options['showdescriptionstudent'];
         }
 
         $output = $this->box($instance->get_controller()->get_formatted_description(), 'gradingform_guide-description').
