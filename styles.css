@@ -19,6 +19,7 @@
 .gradingform_guide .criterion.even {background:#F0F0F0;}
 
 .gradingform_guide .criterion .description {width:300px;font-weight:bold;}
+.gradingform_guide .comments .criterion .description {width:600px;font-weight:bold;}
 
 .gradingform_guide .plainvalue.empty {font-style: italic; color: #AAA;}
 
