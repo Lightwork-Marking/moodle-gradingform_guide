@@ -12,7 +12,7 @@ M.gradingform_guide.init = function(Y, options) {
     });
     Y.all('.markingguidecomment').each(function (node) {
         node.on('click', function(ev) {
-            currentfocus.setContent(node.get('innerHTML'));
+            currentfocus.setContent(currentfocus.get('innerHTML') + '\n' + node.get('innerHTML'));
             currentfocus.focus();
         });
     });
