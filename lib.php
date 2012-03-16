@@ -788,6 +788,11 @@ class gradingform_guide_instance extends gradingform_instance {
                 $mode = gradingform_guide_controller::DISPLAY_REVIEW;
             }
         }
+        $showadvanced = get_user_preferences('gradingform_guide_showmarkerdescription', false);
+        if (optional_param('togglemarkerdesc', false, PARAM_BOOL)) {
+            $showadvanced = !$showadvanced;
+            set_user_preference('gradingform_guide_showmarkerdescription', $showadvanced);
+        }
         $criteria = $this->get_controller()->get_definition()->guide_criteria;
         $comments = $this->get_controller()->get_definition()->guide_comment;
         $options = $this->get_controller()->get_options();

@@ -109,10 +109,14 @@ M.gradingform_guideeditor.editmode = function(el, editmode) {
     } else {
         // if we need to show the input fields, set the width/height for textarea so it fills the cell
         try {
-            var width = parseFloat(ta.get('parentNode').getComputedStyle('width'))-10,
-                height = parseFloat(ta.get('parentNode').getComputedStyle('height'))
-            ta.setStyle('width', Math.max(width,50)+'px')
-            ta.setStyle('height', Math.max(height,20)+'px')
+            if (ta.get('name').indexOf('[maxscore]') > 1) {
+                ta.setStyle('width', '25px');
+            } else {
+                var width = parseFloat(ta.get('parentNode').getComputedStyle('width'))-10,
+                    height = parseFloat(ta.get('parentNode').getComputedStyle('height'))
+                ta.setStyle('width', Math.max(width,50)+'px')
+                ta.setStyle('height', Math.max(height,20)+'px')
+            }
         }
         catch (err) {
             // this browser do not support 'computedStyle', leave the default size of the textbox
