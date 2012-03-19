@@ -20,10 +20,11 @@
 
 .gradingform_guide .criterion .description {width:100%;}
 .gradingform_guide .criterion .description .criterionmaxscore input {width:20px;}
+.gradingform_guide .criterion .description .criterionname {font-weight:bold;}
 .gradingform_guide .criterion label {font-weight:bold;}
 
 .gradingform_guide .plainvalue.empty {font-style: italic; color: #AAA;}
-
+.gradingform_guide .plainvalue.editname {font-weight:bold;}
 
 /* Make invisible the buttons 'Move up' for the first criterion and 'Move down' for the last, because those buttons will make no change */
 .gradingform_guide.editor .criterion.first.last .controls .delete input,
@@ -56,3 +57,5 @@
 
 .gradingform_guide .markingguidecomment {cursor: pointer;}
 .gradingform_guide .commentheader  {font-weight:bold;font-size:1.1em;padding-bottom:5px;}
+
+.path-grade-grading-form-guide.jsenabled .criterionnamelabel {display: none;}

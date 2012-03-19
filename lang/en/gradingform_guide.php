@@ -37,6 +37,7 @@ $string['err_nomaxscore'] = 'Criterion max score can not be empty';
 $string['err_maxscorenotnumeric'] = 'Criterion max score must be numeric';
 $string['alwaysshowdefinition'] = 'Show guide definition to students';
 $string['clicktoedit'] = 'Click to edit';
+$string['clicktoeditname'] = 'Click to edit criterion name';
 $string['comments'] = 'Frequently used comments';
 $string['commentsdelete'] = 'Delete comment';
 $string['commentsempty'] = 'Click to edit comment';

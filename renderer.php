@@ -126,7 +126,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
 
         $displayremark = ($mode != gradingform_guide_controller::DISPLAY_VIEW);
         $title = html_writer::tag('label', get_string('criterion', 'gradingform_guide'),
-            array('for'=>'{NAME}[criteria][{CRITERION-id}][shortname]'));
+            array('for'=>'{NAME}[criteria][{CRITERION-id}][shortname]', 'class' => 'criterionnamelabel'));
         $title .= $shortname;
         if ($mode == gradingform_guide_controller::DISPLAY_EDIT_FULL ||
             $mode == gradingform_guide_controller::DISPLAY_PREVIEW) {

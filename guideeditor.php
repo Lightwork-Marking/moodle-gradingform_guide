@@ -87,7 +87,8 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
                 'fullpath'=>'/grade/grading/form/guide/js/guideeditor.js',
                 'strings' => array(
                     array('confirmdeletecriterion', 'gradingform_guide'),
-                    array('clicktoedit', 'gradingform_guide')
+                    array('clicktoedit', 'gradingform_guide'),
+                    array('clicktoeditname', 'gradingform_guide')
             ));
             $PAGE->requires->js_init_call('M.gradingform_guideeditor.init', array(
                 array('name' => $this->getName(),

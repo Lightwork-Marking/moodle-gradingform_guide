@@ -93,6 +93,9 @@ M.gradingform_guideeditor.editmode = function(el, editmode) {
         var value = ta.get('value')
         if (value.length) {
             taplain.removeClass('empty')
+        } else if (ta.get('name').indexOf('[shortname]') > 1){
+            value = M.str.gradingform_guide.clicktoeditname
+            taplain.addClass('editname')
         } else {
             value = M.str.gradingform_guide.clicktoedit
             taplain.addClass('empty')
