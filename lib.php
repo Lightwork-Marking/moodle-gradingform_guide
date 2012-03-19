@@ -327,6 +327,10 @@ class gradingform_guide_controller extends gradingform_controller {
             }
         }
         $rs->close();
+        $showdesc = optional_param('showmarkerdesc', null, PARAM_BOOL); //check if we need to change pref
+        if ($showdesc !== null) {
+            set_user_preference('gradingform_guide-showmarkerdesc', $showdesc);
+        }
     }
 
     /**
@@ -711,6 +715,7 @@ class gradingform_guide_instance extends gradingform_instance {
         global $DB;
         $currentgrade = $this->get_guide_filling();
         parent::update($data);
+
         foreach ($data['criteria'] as $criterionid => $record) {
             if (!array_key_exists($criterionid, $currentgrade['criteria'])) {
                 $newrecord = array('instanceid' => $this->get_id(), 'criterionid' => $criterionid,
@@ -776,7 +781,6 @@ class gradingform_guide_instance extends gradingform_instance {
      * @return string
      */
     public function render_grading_element($page, $gradingformelement) {
-        global $USER;
         if (!$gradingformelement->_flagFrozen) {
             $module = array('name'=>'gradingform_guide', 'fullpath'=>'/grade/grading/form/guide/js/guide.js');
             $page->requires->js_init_call('M.gradingform_guide.init', array(array('name' => $gradingformelement->getName())), true, $module);
@@ -787,11 +791,6 @@ class gradingform_guide_instance extends gradingform_instance {
             } else {
                 $mode = gradingform_guide_controller::DISPLAY_REVIEW;
             }
-        }
-        $showadvanced = get_user_preferences('gradingform_guide_showmarkerdescription', false);
-        if (optional_param('togglemarkerdesc', false, PARAM_BOOL)) {
-            $showadvanced = !$showadvanced;
-            set_user_preference('gradingform_guide_showmarkerdescription', $showadvanced);
         }
         $criteria = $this->get_controller()->get_definition()->guide_criteria;
         $comments = $this->get_controller()->get_definition()->guide_comment;

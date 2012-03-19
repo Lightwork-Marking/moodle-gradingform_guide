@@ -63,6 +63,7 @@ $string['guidemappingexplained'] = 'The maximum score <b>{$a->maxscore} points<
     Intermediate scores will be converted respectively and rounded to the nearest available grade.<br />
     If a scale is used instead of a grade, the score will be converted to the scale elements as if they were consecutive integers.';
 $string['guidenotcompleted'] = 'Please provide a valid grade for each criterion';
+$string['hidemarkerdesc'] = 'Hide marker descriptions';
 $string['maxscore'] = 'Maximum mark';
 $string['needregrademessage'] = 'The marking guide definition was changed after this student had been graded. The student can not see this marking guide until you check the marking guide and update the grade.';
 $string['regrademessage1'] = 'You are about to save changes to a marking guide that has already been used for grading. Please indicate if existing grades need to be reviewed. If you set this then the marking guide will be hidden from students until their item is regraded.';
@@ -72,6 +73,7 @@ $string['regradeoption1'] = 'Mark for regrade';
 $string['restoredfromdraft'] = 'NOTE: The last attempt to grade this person was not saved properly so draft grades have been restored. If you want to cancel these changes use the \'Cancel\' button below.';
 $string['save'] = 'Save';
 $string['saveguide'] = 'Save marking guide and make it ready';
+$string['showmarkerdesc'] = 'Show marker descriptions';
 $string['saveguidedraft'] = 'Save as draft';
 $string['showdescriptionstudent'] = 'Display description to those being graded';
 $string['score'] = 'score';
