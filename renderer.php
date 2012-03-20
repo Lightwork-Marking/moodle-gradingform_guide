@@ -70,6 +70,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
 
         $criteriontemplate = html_writer::start_tag('tr', array('class' => 'criterion'. $criterion['class'],
             'id' => '{NAME}-criteria-{CRITERION-id}'));
+        $descriptionclass = 'description';
         if ($mode == gradingform_guide_controller::DISPLAY_EDIT_FULL) {
             $criteriontemplate .= html_writer::start_tag('td', array('class' => 'controls'));
             foreach (array('moveup', 'delete', 'movedown') as $key) {
@@ -117,6 +118,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
                 array('class'=>'criteriondescription', 'name' => '{NAME}[criteria][{CRITERION-id}][descriptionmarkers]'));
             $descmarkerclass = '';
             if ($mode == gradingform_guide_controller::DISPLAY_EVAL) {
+                $descriptionclass = 'descriptionreadonly';
                 if (!get_user_preferences('gradingform_guide-showmarkerdesc', true)) {
                     $descmarkerclass = ' hide';
                 }
@@ -126,7 +128,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
             $maxscore   = html_writer::tag('div', $criterion['maxscore'],
                 array('class'=>'criteriondescriptionscore', 'name' => '{NAME}[criteria][{CRITERION-id}][maxscore]'));
         }
-        $descriptionclass = 'description';
+
         if (isset($criterion['error_description'])) {
             $descriptionclass .= ' error';
         }

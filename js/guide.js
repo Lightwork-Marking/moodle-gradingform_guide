@@ -5,6 +5,8 @@ M.gradingform_guide = {};
  */
 M.gradingform_guide.init = function(Y, options) {
     var currentfocus = null;
+    var collapsedwidth = null;
+    var shortwidth = null;
     Y.all('.markingguideremark').each(function (node) {
         node.on('blur', function(ev) {
             currentfocus = node;
@@ -16,7 +18,6 @@ M.gradingform_guide.init = function(Y, options) {
             currentfocus.focus();
         });
     });
-    Y.all('.criteria .markingguideremark').each( function(node) {M.gradingform_guide.editmode(node, false)} );
 
     Y.all('.showmarkerdesc input[type=radio]').each(function(node) {
         node.on('click', function(ev) {
@@ -28,28 +29,9 @@ M.gradingform_guide.init = function(Y, options) {
                 Y.all('.criteriondescriptionmarkers').each(function(node) {
                     node.removeClass('hide')
                 })
-
             }
+            Y.all('.criteria .markingguideremark').each( function(node) {M.gradingform_guide.editmode(node, false)} );
         });
     })
 
 };
-
-// switch the criterion item to edit mode or switch back
-M.gradingform_guide.editmode = function(el, editmode) {
-    var ta = el
-        // if we need to show the input fields, set the width/height for textarea so it fills the cell
-    try {
-        if (ta.get('name').indexOf('[score]') > 1) {
-            ta.setStyle('width', '25px');
-        } else {
-            var width = parseFloat(ta.get('parentNode').getComputedStyle('width'))-10,
-                height = parseFloat(ta.get('parentNode').getComputedStyle('height'))
-            ta.setStyle('width', Math.max(width,50)+'px')
-            ta.setStyle('height', Math.max(height,20)+'px')
-        }
-    }
-    catch (err) {
-        // this browser do not support 'computedStyle', leave the default size of the textbox
-    }
-}
