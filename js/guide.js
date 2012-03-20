@@ -30,7 +30,6 @@ M.gradingform_guide.init = function(Y, options) {
                     node.removeClass('hide')
                 })
             }
-            Y.all('.criteria .markingguideremark').each( function(node) {M.gradingform_guide.editmode(node, false)} );
         });
     })
 
