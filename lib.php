@@ -50,6 +50,9 @@ class gradingform_guide_controller extends gradingform_controller {
     /** guide display mode: Dispaly filled guide (i.e. students see their grades) */
     const DISPLAY_VIEW          = 7;
 
+    /** @var stdClass|false the definition structure */
+    protected $moduleinstance = array();
+
     /**
      * Extends the module settings navigation with the guide grading settings
      *
@@ -331,6 +334,17 @@ class gradingform_guide_controller extends gradingform_controller {
         if ($showdesc !== null) {
             set_user_preference('gradingform_guide-showmarkerdesc', $showdesc);
         }
+        if (empty($this->moduleinstance)) { //only set if empty.
+            $modulename = $this->get_component();
+            $context = $this->get_context();
+            if (strpos($modulename, 'mod_') === 0) {
+                $dbman = $DB->get_manager();
+                $modulename = substr($modulename, 4);
+                if ($dbman->table_exists($modulename)) {
+                    $this->moduleinstance = $DB->get_record($modulename, array('id' => $context->instanceid));
+                }
+            }
+        }
     }
 
     /**
@@ -373,6 +387,7 @@ class gradingform_guide_controller extends gradingform_controller {
         $definition = $this->get_definition();
         $properties = new stdClass();
         $properties->areaid = $this->areaid;
+        $properties->modulegrade = $this->moduleinstance->grade;
         if ($definition) {
             foreach (array('id', 'name', 'description', 'descriptionformat', 'status') as $key) {
                 $properties->$key = $definition->$key;
@@ -621,6 +636,9 @@ class gradingform_guide_controller extends gradingform_controller {
         }
         $returnvalue['maxscore'] = $maxscore;
         $returnvalue['minscore'] = 0;
+        if (!empty($this->moduleinstance->grade)) {
+            $returnvalue['modulegrade'] = $this->moduleinstance->grade;
+        }
         return $returnvalue;
     }
 }

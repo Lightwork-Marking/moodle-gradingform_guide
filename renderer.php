@@ -573,10 +573,11 @@ class gradingform_guide_renderer extends plugin_renderer_base {
         if (!$scores) {
             return $html;
         }
-        $html .= $this->box(
-            html_writer::tag('h4', get_string('guidemapping', 'gradingform_guide')).
-                html_writer::tag('div', get_string('guidemappingexplained', 'gradingform_guide', (object)$scores))
-            , 'generalbox rubricmappingexplained');
+        if (isset($scores['modulegrade']) && $scores['maxscore'] < $scores['modulegrade']) {
+            $html .= $this->box(html_writer::tag('div', get_string('guidemappingexplained', 'gradingform_guide', (object)$scores))
+                , 'generalbox gradingform_guide-error');
+        }
+
         return $html;
     }
 }

@@ -35,6 +35,7 @@ $string['err_nodescriptionmarkers'] = 'Marker description can not be empty';
 $string['err_noshortname'] = 'Criterion name can not be empty';
 $string['err_nomaxscore'] = 'Criterion max score can not be empty';
 $string['err_maxscorenotnumeric'] = 'Criterion max score must be numeric';
+$string['err_maxscoreinvalid'] = 'The Maximum score is higher than the modules max grade setting';
 $string['alwaysshowdefinition'] = 'Show guide definition to students';
 $string['clicktoedit'] = 'Click to edit';
 $string['clicktoeditname'] = 'Click to edit criterion name';
@@ -58,10 +59,8 @@ $string['descriptionmarkers'] = 'Description for Markers';
 $string['name'] = 'Name';
 $string['guideoptions'] = 'Marking guide options';
 $string['guidestatus'] = 'Current marking guide status';
-$string['guidemapping'] = 'Score to grade mapping rules';
-$string['guidemappingexplained'] = 'The maximum score <b>{$a->maxscore} points</b> will be converted to the maximum grade.<br />
-    Intermediate scores will be converted respectively and rounded to the nearest available grade.<br />
-    If a scale is used instead of a grade, the score will be converted to the scale elements as if they were consecutive integers.';
+$string['guidemappingexplained'] = 'WARNING: Your marking guide has a maximum grade of <b>{$a->maxscore} points</b> but the maximum grade set in your module is {$a->modulegrade}  The maximum score set in your marking guide will be scaled up to the maximum grade in the module.<br />
+    Intermediate scores will be converted respectively and rounded to the nearest available grade.';
 $string['guidenotcompleted'] = 'Please provide a valid grade for each criterion';
 $string['hidemarkerdesc'] = 'Hide marker descriptions';
 $string['maxscore'] = 'Maximum mark';

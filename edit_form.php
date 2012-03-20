@@ -46,6 +46,7 @@ class gradingform_guide_editguide extends moodleform {
 
         $form->addElement('hidden', 'returnurl');
 
+        $form->addElement('hidden', 'modulegrade');
         // name
         $form->addElement('text', 'name', get_string('name', 'gradingform_guide'), array('size'=>52));
         $form->addRule('name', get_string('required'), 'required');

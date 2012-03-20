@@ -169,7 +169,9 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
         // iterate through criteria
         $lastaction = null;
         $lastid = null;
+        $totalscore = 0;
         foreach ($value['criteria'] as $id => $criterion) {
+            $totalscore = $totalscore + $criterion['maxscore'];
             if ($id == 'addcriterion') {
                 $id = $this->get_next_id(array_keys($value['criteria']));
                 $criterion = array('description' => '');
@@ -221,6 +223,10 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
                 $return['criteria'][$id] = $criterion;
                 $lastid = $id;
             }
+        }
+        $modulegrade = optional_param('modulegrade', '', PARAM_INT);
+        if (!empty($modulegrade) && $modulegrade < $totalscore) {
+            $errors['err_maxscoreinvalid'] = 1;
         }
 
         // add sort order field to criteria
