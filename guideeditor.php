@@ -179,14 +179,6 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
             }
 
             if ($withvalidation && !array_key_exists('delete', $criterion)) {
-                if (!strlen(trim($criterion['description']))) {
-                    $errors['err_nodescription'] = 1;
-                    $criterion['error_description'] = true;
-                }
-                if (!strlen(trim($criterion['descriptionmarkers']))) {
-                    $errors['err_nodescriptionmarkers'] = 1;
-                    $criterion['error_description'] = true;
-                }
                 if (!strlen(trim($criterion['shortname']))) {
                     $errors['err_noshortname'] = 1;
                     $criterion['error_description'] = true;
@@ -194,7 +186,7 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
                 if (!strlen(trim($criterion['maxscore']))) {
                     $errors['err_nomaxscore'] = 1;
                     $criterion['error_description'] = true;
-                } else if (!is_numeric($criterion['maxscore'])) {
+                } else if (!is_numeric($criterion['maxscore']) || $criterion['maxscore'] < 0) {
                     $errors['err_maxscorenotnumeric'] = 1;
                     $criterion['error_description'] = true;
                 }
@@ -246,12 +238,6 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
                     $this->nonjsbuttonpressed = true;
                 }
 
-                if ($withvalidation && !array_key_exists('delete', $comment)) {
-                    if (!strlen(trim($comment['description']))) {
-                        $errors['err_nocomment'] = 1;
-                        $comment['error_description'] = true;
-                    }
-                }
                 if (array_key_exists('moveup', $comment) || $lastaction == 'movedown') {
                     unset($comment['moveup']);
                     if ($lastid !== null) {
