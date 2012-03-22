@@ -90,7 +90,7 @@ M.gradingform_guideeditor.editmode = function(el, editmode) {
     if (!editmode) {
         // if we need to hide the input fields, copy their contents to plainvalue(s). If description/definition
         // is empty, display the default text ('Click to edit ...') and add/remove 'empty' CSS class to element
-        var value = ta.get('value')
+        var value = YAHOO.lang.trim(ta.get('value'));
         if (value.length) {
             taplain.removeClass('empty')
         } else if (ta.get('name').indexOf('[shortname]') > 1){
@@ -118,7 +118,7 @@ M.gradingform_guideeditor.editmode = function(el, editmode) {
                 var width = parseFloat(ta.get('parentNode').getComputedStyle('width'))-10,
                     height = parseFloat(ta.get('parentNode').getComputedStyle('height'))
                 ta.setStyle('width', Math.max(width,50)+'px')
-                ta.setStyle('height', Math.max(height,20)+'px')
+                ta.setStyle('height', Math.max(height,30)+'px')
             }
         }
         catch (err) {
