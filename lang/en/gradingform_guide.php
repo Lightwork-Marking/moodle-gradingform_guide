@@ -58,7 +58,7 @@ $string['descriptionmarkers'] = 'Description for Markers';
 $string['name'] = 'Name';
 $string['guideoptions'] = 'Marking guide options';
 $string['guidestatus'] = 'Current marking guide status';
-$string['guidemappingexplained'] = 'WARNING: Your marking guide has a maximum grade of <b>{$a->maxscore} points</b> but the maximum grade set in your module is {$a->modulegrade}  The maximum score set in your marking guide will be scaled up to the maximum grade in the module.<br />
+$string['guidemappingexplained'] = 'WARNING: Your marking guide has a maximum grade of <b>{$a->maxscore} points</b> but the maximum grade set in your assignment is {$a->modulegrade}  The maximum score set in your marking guide will be scaled up to the maximum grade in the module.<br />
     Intermediate scores will be converted respectively and rounded to the nearest available grade.';
 $string['guidenotcompleted'] = 'Please provide a valid grade for each criterion';
 $string['hidemarkerdesc'] = 'Hide marker criterion descriptions';
