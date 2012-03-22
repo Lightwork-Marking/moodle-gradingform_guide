@@ -331,8 +331,12 @@ class gradingform_guide_controller extends gradingform_controller {
         }
         $rs->close();
         $showdesc = optional_param('showmarkerdesc', null, PARAM_BOOL); //check if we need to change pref
+        $showdescstudent = optional_param('showstudentdesc', null, PARAM_BOOL); //check if we need to change pref
         if ($showdesc !== null) {
             set_user_preference('gradingform_guide-showmarkerdesc', $showdesc);
+        }
+        if ($showdescstudent !== null) {
+            set_user_preference('gradingform_guide-showstudentdesc', $showdescstudent);
         }
         if (empty($this->moduleinstance)) { //only set if empty.
             $modulename = $this->get_component();

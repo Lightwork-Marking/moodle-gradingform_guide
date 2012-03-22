@@ -114,15 +114,19 @@ class gradingform_guide_renderer extends plugin_renderer_base {
             }
             $shortname   = html_writer::tag('div', $criterion['shortname'],
                 array('class'=>'criterionshortname', 'name' => '{NAME}[criteria][{CRITERION-id}][shortname]'));
-            $description = html_writer::tag('div', $criterion['description'],
-                array('class'=>'criteriondescription', 'name' => '{NAME}[criteria][{CRITERION-id}][descriptionmarkers]'));
             $descmarkerclass = '';
+            $descstudentclass = '';
             if ($mode == gradingform_guide_controller::DISPLAY_EVAL) {
                 $descriptionclass = 'descriptionreadonly';
                 if (!get_user_preferences('gradingform_guide-showmarkerdesc', true)) {
                     $descmarkerclass = ' hide';
                 }
+                if (!get_user_preferences('gradingform_guide-showstudentdesc', true)) {
+                    $descstudentclass = ' hide';
+                }
             }
+            $description = html_writer::tag('div', $criterion['description'],
+                array('class'=>'criteriondescription'.$descstudentclass, 'name' => '{NAME}[criteria][{CRITERION-id}][descriptionmarkers]'));
             $descriptionmarkers   = html_writer::tag('div', $criterion['descriptionmarkers'],
                 array('class'=>'criteriondescriptionmarkers'.$descmarkerclass, 'name' => '{NAME}[criteria][{CRITERION-id}][descriptionmarkers]'));
             $maxscore   = html_writer::tag('div', $criterion['maxscore'],
@@ -152,7 +156,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
                    $mode == gradingform_guide_controller::DISPLAY_VIEW) {
             $title .= $description;
         } else {
-            $title .= $descriptionmarkers;
+            $title .= $description . $descriptionmarkers;
         }
         $criteriontemplate .= html_writer::tag('td', $title, array('class' => $descriptionclass,
             'id' => '{NAME}-criteria-{CRITERION-id}-shortname'));
@@ -460,13 +464,23 @@ class gradingform_guide_renderer extends plugin_renderer_base {
         $output = $this->guide_template($mode, $options, $elementname, $criteriastr, $commentstr);
         if ($mode == gradingform_guide_controller::DISPLAY_EVAL) {
             $showdesc = get_user_preferences('gradingform_guide-showmarkerdesc', true);
+            $showdescstud = get_user_preferences('gradingform_guide-showstudentdesc', true);
             $checked1 = array();
             $checked2 = array();
+            $checked_s1 = array();
+            $checked_s2 = array();
+            $checked = array('checked' => 'checked');
             if ($showdesc) {
-                $checked1 = array('checked' => 'checked');
+                $checked1 = $checked;
             } else {
-                $checked2 = array('checked' => 'checked');
+                $checked2 = $checked;
             }
+            if ($showdescstud) {
+                $checked_s1 = $checked;
+            } else {
+                $checked_s2 = $checked;
+            }
+
             $radio = html_writer::tag('input', get_string('showmarkerdesc', 'gradingform_guide'), array('type' => 'radio',
                 'name' => 'showmarkerdesc',
                 'value' => "true")+$checked1);
@@ -475,6 +489,13 @@ class gradingform_guide_renderer extends plugin_renderer_base {
                 'value' => "false")+$checked2);
             $output .= html_writer::tag('div', $radio, array('class' => 'showmarkerdesc'));
 
+            $radio = html_writer::tag('input', get_string('showstudentdesc', 'gradingform_guide'), array('type' => 'radio',
+                'name' => 'showstudentdesc',
+                'value' => "true")+$checked_s1);
+            $radio .= html_writer::tag('input', get_string('hidestudentdesc', 'gradingform_guide'), array('type' => 'radio',
+                'name' => 'showstudentdesc',
+                'value' => "false")+$checked_s2);
+            $output .= html_writer::tag('div', $radio, array('class' => 'showstudentdesc'));
         }
         return $output;
     }

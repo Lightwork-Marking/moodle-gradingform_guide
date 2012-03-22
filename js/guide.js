@@ -33,4 +33,17 @@ M.gradingform_guide.init = function(Y, options) {
         });
     })
 
+    Y.all('.showstudentdesc input[type=radio]').each(function(node) {
+        node.on('click', function(ev) {
+            if (node.get('value')=='false') {
+                Y.all('.criteriondescription').each(function(node) {
+                    node.addClass('hide')
+                })
+            } else {
+                Y.all('.criteriondescription').each(function(node) {
+                    node.removeClass('hide')
+                })
+            }
+        });
+    })
 };
