@@ -216,7 +216,6 @@ class gradingform_guide_controller extends gradingform_controller {
                 if ($doupdate) {
                     $id = $DB->insert_record('gradingform_guide_faq', $data);
                 }
-                $haschanges[5] = true;
             } else {
                 // update criterion in DB
                 $data = array();
@@ -231,7 +230,6 @@ class gradingform_guide_controller extends gradingform_controller {
                     if ($doupdate) {
                         $DB->update_record('gradingform_guide_faq', $data);
                     }
-                    $haschanges[1] = true;
                 }
             }
         }
@@ -241,7 +239,6 @@ class gradingform_guide_controller extends gradingform_controller {
                 if ($doupdate) {
                     $DB->delete_records('gradingform_guide_faq', array('id' => $id));
                 }
-                $haschanges[3] = true;
             }
         }
         //end comments handle

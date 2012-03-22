@@ -451,6 +451,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
         $commentstr = '';
         //check if comments should be displayed
         if ($mode == gradingform_guide_controller::DISPLAY_EDIT_FULL ||
+            $mode == gradingform_guide_controller::DISPLAY_EDIT_FROZEN ||
             $mode == gradingform_guide_controller::DISPLAY_PREVIEW ||
             $mode == gradingform_guide_controller::DISPLAY_EVAL ||
             $mode == gradingform_guide_controller::DISPLAY_EVAL_FROZEN) {
