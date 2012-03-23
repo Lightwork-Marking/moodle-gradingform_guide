@@ -50,7 +50,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      * @param array|null $value (only in view mode) teacher's feedback on this criterion
      * @return string
      */
-    public function criterion_template($mode, $options, $elementname = '{NAME}', $criterion = null, $value = null) {
+    public function criterion_template($mode, $options, $elementname = '{NAME}', $criterion = null, $value = null, $validationerrors = null) {
         if ($criterion === null || !is_array($criterion) || !array_key_exists('id', $criterion)) {
             $criterion = array('id' => '{CRITERION-id}',
                                'description' => '{CRITERION-description}',
@@ -171,14 +171,19 @@ class gradingform_guide_renderer extends plugin_renderer_base {
                 $currentscore = $value['score'];
             }
             if ($mode == gradingform_guide_controller::DISPLAY_EVAL) {
+                $scoreclass = '';
+                if (!empty($validationerrors[$criterion['id']]['score'])) {
+                    $scoreclass = 'error';
+                    $currentscore = $validationerrors[$criterion['id']]['score']; //show invalid score in form
+                }
                 $input = html_writer::tag('textarea', htmlspecialchars($currentremark),
                     array('name' => '{NAME}[criteria][{CRITERION-id}][remark]', 'cols' => '65', 'rows' => '5',
                           'class' => 'markingguideremark'));
                 $criteriontemplate .= html_writer::tag('td', $input, array('class' => 'remark'));
                 $score = html_writer::tag('label', get_string('score', 'gradingform_guide'),
-                    array('for'=>'{NAME}[criteria][{CRITERION-id}][score]'));
+                    array('for'=>'{NAME}[criteria][{CRITERION-id}][score]', 'class' => $scoreclass));
                 $score .= html_writer::empty_tag('input', array('type'=> 'text',
-                    'name' => '{NAME}[criteria][{CRITERION-id}][score]',
+                    'name' => '{NAME}[criteria][{CRITERION-id}][score]', 'class' => $scoreclass,
                     'size' => '3', 'value' => htmlspecialchars($currentscore)));
                 $score .= '/'.$maxscore;
 
@@ -434,7 +439,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      * @param array $values evaluation result
      * @return string
      */
-    public function display_guide($criteria, $comments, $options, $mode, $elementname = null, $values = null) {
+    public function display_guide($criteria, $comments, $options, $mode, $elementname = null, $values = null, $validationerrors = null) {
         $criteriastr = '';
         $cnt = 0;
         foreach ($criteria as $id => $criterion) {
@@ -445,7 +450,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
             } else {
                 $criterionvalue = null;
             }
-            $criteriastr .= $this->criterion_template($mode, $options, $elementname, $criterion, $criterionvalue);
+            $criteriastr .= $this->criterion_template($mode, $options, $elementname, $criterion, $criterionvalue, $validationerrors);
         }
         $cnt = 0;
         $commentstr = '';

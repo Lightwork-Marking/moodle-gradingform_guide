@@ -53,6 +53,8 @@ class gradingform_guide_controller extends gradingform_controller {
     /** @var stdClass|false the definition structure */
     protected $moduleinstance = array();
 
+    protected $validationerrors = array();
+
     /**
      * Extends the module settings navigation with the guide grading settings
      *
@@ -695,11 +697,16 @@ class gradingform_guide_instance extends gradingform_instance {
             count($elementvalue['criteria']) < count($criteria)) {
             return false;
         }
+        //reset validation errors:
+        $this->validationerrors = null;
         foreach ($criteria as $id => $criterion) {
             if (!isset($elementvalue['criteria'][$id]['score'])
                     || $criterion['maxscore'] < $elementvalue['criteria'][$id]['score'] ) {
-                return false;
+                $this->validationerrors[$id]['score'] =  $elementvalue['criteria'][$id]['score'];
             }
+        }
+        if (!empty($this->validationerrors)) {
+            return false;
         }
         return true;
     }
@@ -821,6 +828,15 @@ class gradingform_guide_instance extends gradingform_instance {
         } else if (!$this->validate_grading_element($value)) {
             $html .= html_writer::tag('div', get_string('guidenotcompleted', 'gradingform_guide'),
                 array('class' => 'gradingform_guide-error'));
+            if (!empty($this->validationerrors)) {
+                foreach ($this->validationerrors as $id => $err) {
+                    $a = new stdClass();
+                    $a->criterianame = $criteria[$id]['shortname'];
+                    $a->maxscore = $criteria[$id]['maxscore'];
+                    $html .= html_writer::tag('div', get_string('err_scoreinvalid', 'gradingform_guide', $a),
+                        array('class' => 'gradingform_guide-error'));
+                }
+            }
         }
         $currentinstance = $this->get_current_instance();
         if ($currentinstance && $currentinstance->get_status() == gradingform_instance::INSTANCE_STATUS_NEEDUPDATE) {
@@ -850,7 +866,7 @@ class gradingform_guide_instance extends gradingform_instance {
                 array('class' => 'gradingform_guide-description'));
         }
         $html .= $this->get_controller()->get_renderer($page)->display_guide($criteria, $comments, $options, $mode,
-            $gradingformelement->getName(), $value);
+            $gradingformelement->getName(), $value, $this->validationerrors);
         return $html;
     }
 }

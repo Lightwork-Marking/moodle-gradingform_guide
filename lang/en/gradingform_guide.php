@@ -35,6 +35,7 @@ $string['err_nodescriptionmarkers'] = 'Marker description can not be empty';
 $string['err_noshortname'] = 'Criterion name can not be empty';
 $string['err_nomaxscore'] = 'Criterion max score can not be empty';
 $string['err_maxscorenotnumeric'] = 'Criterion max score must be numeric';
+$string['err_scoreinvalid'] = 'The score given to {$a->criterianame} is higher than the max score: {$a->maxscore}';
 $string['alwaysshowdefinition'] = 'Show guide definition to students';
 $string['clicktoedit'] = 'Click to edit';
 $string['clicktoeditname'] = 'Click to edit criterion name';
