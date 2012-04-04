@@ -17,9 +17,7 @@
 /**
  * Grading method controller for the guide plugin
  *
- * @package    gradingform
- * @subpackage guide
- * @copyright  2011 David Mudrak <david@moodle.com>
+ * @package    gradingform_guide
  * @copyright  2012 Dan Marsden <dan@danmarsden.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,6 +28,10 @@ require_once($CFG->dirroot.'/grade/grading/form/lib.php');
 
 /**
  * This controller encapsulates the guide grading logic
+ *
+ * @package    gradingform_guide
+ * @copyright  2012 Dan Marsden <dan@danmarsden.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class gradingform_guide_controller extends gradingform_controller {
     // Modes of displaying the guide (used in gradingform_guide_renderer)
@@ -53,6 +55,7 @@ class gradingform_guide_controller extends gradingform_controller {
     /** @var stdClass|false the definition structure */
     protected $moduleinstance = array();
 
+    /** @var array An array of validation errors */
     protected $validationerrors = array();
 
     /**
@@ -79,6 +82,7 @@ class gradingform_guide_controller extends gradingform_controller {
      *
      * @param global_navigation $navigation {@link global_navigation}
      * @param navigation_node $node {@link navigation_node}
+     * @return void
      */
     public function extend_navigation(global_navigation $navigation, navigation_node $node=null) {
         if (has_capability('moodle/grade:managegradingforms', $this->get_context())) {
@@ -97,7 +101,7 @@ class gradingform_guide_controller extends gradingform_controller {
      *
      * @see parent::update_definition()
      * @param stdClass $newdefinition guide definition data as coming from gradingform_guide_editguide::get_data()
-     * @param int|null $usermodified optional userid of the author of the definition, defaults to the current user
+     * @param int $usermodified optional userid of the author of the definition, defaults to the current user
      */
     public function update_definition(stdClass $newdefinition, $usermodified = null) {
         $this->update_or_check_guide($newdefinition, $usermodified, true);
@@ -108,6 +112,7 @@ class gradingform_guide_controller extends gradingform_controller {
 
     /**
      * Either saves the guide definition into the database or check if it has been changed.
+     *
      * Returns the level of changes:
      * 0 - no changes
      * 1 - only texts or criteria sortorders are changed, students probably do not require re-grading
@@ -118,8 +123,8 @@ class gradingform_guide_controller extends gradingform_controller {
      *
      * @param stdClass $newdefinition guide definition data as coming from gradingform_guide_editguide::get_data()
      * @param int|null $usermodified optional userid of the author of the definition, defaults to the current user
-     * @param boolean $doupdate if true actually updates DB, otherwise performs a check
-     *
+     * @param bool $doupdate if true actually updates DB, otherwise performs a check
+     * @return int
      */
     public function update_or_check_guide(stdClass $newdefinition, $usermodified = null, $doupdate = false) {
         global $DB;
@@ -382,7 +387,7 @@ class gradingform_guide_controller extends gradingform_controller {
     /**
      * Converts the current definition into an object suitable for the editor form's set_data()
      *
-     * @param boolean $addemptycriterion whether to add an empty criterion if the guide is completely empty (just being created)
+     * @param bool $addemptycriterion whether to add an empty criterion if the guide is completely empty (just being created)
      * @return stdClass
      */
     public function get_definition_for_editing($addemptycriterion = false) {
@@ -445,7 +450,7 @@ class gradingform_guide_controller extends gradingform_controller {
     /**
      * Options for displaying the guide description field in the form
      *
-     * @param object $context
+     * @param context $context
      * @return array options for the form description field
      */
     public static function description_form_field_options($context) {
@@ -577,7 +582,7 @@ class gradingform_guide_controller extends gradingform_controller {
      * @param int $itemid
      * @param array $gradinginfo result of function grade_get_grades
      * @param string $defaultcontent default string to be returned if no active grading is found
-     * @param boolean $cangrade whether current user has capability to grade in this context
+     * @param bool $cangrade whether current user has capability to grade in this context
      * @return string
      */
     public function render_grade($page, $itemid, $gradinginfo, $defaultcontent, $cangrade) {
@@ -604,7 +609,9 @@ class gradingform_guide_controller extends gradingform_controller {
      * with other conditions using the OR operator.
      *
      * @param string $token token to search for
-     * @return array
+     * @return array An array containing two more arrays
+     *     Array of search SQL fragments
+     *     Array of params for the search fragments
      */
     public static function sql_search_where($token) {
         global $DB;
@@ -650,10 +657,13 @@ class gradingform_guide_controller extends gradingform_controller {
  * Class to manage one guide grading instance. Stores information and performs actions like
  * update, copy, validate, submit, etc.
  *
- * @copyright  2011 Marina Glancy
+ * @package    gradingform_guide
+ * @copyright  2012 Dan Marsden <dan@danmarsden.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class gradingform_guide_instance extends gradingform_instance {
 
+    /** @var array */
     protected $guide;
 
     /**
@@ -714,7 +724,7 @@ class gradingform_guide_instance extends gradingform_instance {
     /**
      * Retrieves from DB and returns the data how this guide was filled
      *
-     * @param boolean $force whether to force DB query even if the data is cached
+     * @param bool $force whether to force DB query even if the data is cached
      * @return array
      */
     public function get_guide_filling($force = false) {
@@ -803,7 +813,7 @@ class gradingform_guide_instance extends gradingform_instance {
      * Returns html for form element of type 'grading'.
      *
      * @param moodle_page $page
-     * @param MoodleQuickForm_grading $formelement
+     * @param MoodleQuickForm_grading $gradingformelement
      * @return string
      */
     public function render_grading_element($page, $gradingformelement) {

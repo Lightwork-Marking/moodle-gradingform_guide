@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    gradingform
- * @subpackage guide
+ * @package    gradingform_guide
  * @copyright  2012 Dan Marsden <dan@danmarsden.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,6 +24,11 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("HTML/QuickForm/input.php");
 
+/**
+ * @package    gradingform_guide
+ * @copyright  2012 Dan Marsden <dan@danmarsden.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class moodlequickform_guideeditor extends HTML_QuickForm_input {
     /** help message */
     public $_helpbutton = '';
@@ -37,7 +41,12 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
     /** Message to display in front of the editor (that there exist grades on this guide being edited) */
     protected $regradeconfirmation = false;
 
-    function moodlequickform_guideeditor($elementname=null, $elementlabel=null, $attributes=null) {
+    /**
+     * @param string $elementname
+     * @param string $elementlabel
+     * @param array $attributes
+     */
+    public function moodlequickform_guideeditor($elementname=null, $elementlabel=null, $attributes=null) {
         parent::HTML_QuickForm_input($elementname, $elementlabel, $attributes);
     }
 

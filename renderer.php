@@ -15,8 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    gradingform
- * @subpackage guide
+ * Contains the Guide grading form renderer in all of its glory
+ *
+ * @package    gradingform_guide
  * @copyright  2012 Dan Marsden <dan@danmarsden.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,6 +26,10 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Grading method plugin renderer
+ *
+ * @package    gradingform_guide
+ * @copyright  2012 Dan Marsden <dan@danmarsden.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class gradingform_guide_renderer extends plugin_renderer_base {
 
@@ -43,11 +48,13 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      * Also JavaScript relies on the class names of elements and when developer changes them
      * script might stop working.
      *
-     * @param int $mode guide display mode @see gradingform_guide_controller
+     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@see gradingform_guide_controller}
+     * @param array $options An array of options.
+     *      showmarkspercriterionstudents (bool) If true adds the current score to the display
      * @param string $elementname the name of the form element (in editor mode) or the prefix for div ids (in view mode)
-     * @param array|null $criterion criterion data
-     * @param string $levelsstr evaluated templates for this criterion levels
-     * @param array|null $value (only in view mode) teacher's feedback on this criterion
+     * @param array $criterion criterion data
+     * @param array $value (only in view mode) teacher's feedback on this criterion
+     * @param array $validationerrors An array containing validation errors to be shown
      * @return string
      */
     public function criterion_template($mode, $options, $elementname = '{NAME}', $criterion = null, $value = null, $validationerrors = null) {
@@ -221,11 +228,9 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      * Also JavaScript relies on the class names of elements and when developer changes them
      * script might stop working.
      *
-     * @param int $mode guide display mode @see gradingform_guide_controller
+     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@see gradingform_guide_controller}
      * @param string $elementname the name of the form element (in editor mode) or the prefix for div ids (in view mode)
-     * @param array|null $criterion criterion data
-     * @param string $levelsstr evaluated templates for this criterion levels
-     * @param array|null $value (only in view mode) teacher's feedback on this criterion
+     * @param array $comment
      * @return string
      */
     public function comment_template($mode, $elementname = '{NAME}', $comment = null) {
@@ -299,9 +304,11 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      * Also JavaScript relies on the class names of elements and when developer changes them
      * script might stop working.
      *
-     * @param int $mode guide display mode @see gradingform_guide_controller
+     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@see gradingform_guide_controller}
+     * @param array $options An array of options provided to {@see gradingform_guide_renderer::guide_edit_options()}
      * @param string $elementname the name of the form element (in editor mode) or the prefix for div ids (in view mode)
      * @param string $criteriastr evaluated templates for this guide's criteria
+     * @param string $commentstr
      * @return string
      */
     protected function guide_template($mode, $options, $elementname, $criteriastr, $commentstr) {
@@ -363,7 +370,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      * Generates html template to view/edit the guide options. Expression {NAME} is used in
      * template for the form element name
      *
-     * @param int $mode
+     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@see gradingform_guide_controller}
      * @param array $options
      * @return string
      */
@@ -434,9 +441,12 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      * guide_template
      *
      * @param array $criteria data about the guide design
-     * @param int $mode guide display mode @see gradingform_guide_controller
+     * @param array $comments
+     * @param array $options
+     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@see gradingform_guide_controller}
      * @param string $elementname the name of the form element (in editor mode) or the prefix for div ids (in view mode)
      * @param array $values evaluation result
+     * @param array $validationerrors
      * @return string
      */
     public function display_guide($criteria, $comments, $options, $mode, $elementname = null, $values = null, $validationerrors = null) {
@@ -521,7 +531,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
         if ($idx == $maxidx) {
             $class .= ' last';
         }
-        if ($idx%2) {
+        if ($idx % 2) {
             $class .= ' odd';
         } else {
             $class .= ' even';
@@ -534,7 +544,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      *
      * @param array $instances array of objects of type gradingform_rubric_instance
      * @param string $defaultcontent default string that would be displayed without advanced grading
-     * @param boolean $cangrade whether current user has capability to grade in this context
+     * @param bool $cangrade whether current user has capability to grade in this context
      * @return string
      */
     public function display_instances($instances, $defaultcontent, $cangrade) {
@@ -554,8 +564,8 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      * Displays one grading instance
      *
      * @param gradingform_rubric_instance $instance
-     * @param int idx unique number of instance on page
-     * @param boolean $cangrade whether current user has capability to grade in this context
+     * @param int $idx unique number of instance on page
+     * @param bool $cangrade whether current user has capability to grade in this context
      */
     public function display_instance(gradingform_guide_instance $instance, $idx, $cangrade) {
         $criteria = $instance->get_controller()->get_definition()->guide_criteria;
@@ -573,6 +583,14 @@ class gradingform_guide_renderer extends plugin_renderer_base {
     }
 
 
+    /**
+     * Displays a confirmation message after a regrade has occured
+     *
+     * @param string $elementname
+     * @param int $changelevel
+     * @param int $value The regrade option that was used
+     * @return string
+     */
     public function display_regrade_confirmation($elementname, $changelevel, $value) {
         $html = html_writer::start_tag('div', array('class' => 'gradingform_guide-regrade'));
         if ($changelevel<=2) {
