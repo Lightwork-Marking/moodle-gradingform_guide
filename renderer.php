@@ -542,7 +542,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
     /**
      * Displays for the student the list of instances or default content if no instances found
      *
-     * @param array $instances array of objects of type gradingform_rubric_instance
+     * @param array $instances array of objects of type gradingform_guide_instance
      * @param string $defaultcontent default string that would be displayed without advanced grading
      * @param bool $cangrade whether current user has capability to grade in this context
      * @return string
@@ -563,7 +563,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
     /**
      * Displays one grading instance
      *
-     * @param gradingform_rubric_instance $instance
+     * @param gradingform_guide_instance $instance
      * @param int $idx unique number of instance on page
      * @param bool $cangrade whether current user has capability to grade in this context
      */
@@ -608,7 +608,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
         return $html;
     }
     /**
-     * Generates and returns HTML code to display information box about how rubric score is converted to the grade
+     * Generates and returns HTML code to display information box about how guide score is converted to the grade
      *
      * @param array $scores
      * @return string
