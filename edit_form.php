@@ -127,7 +127,8 @@ class gradingform_guide_editguide extends moodleform {
         } else if (isset($data['editguide'])) {
             // continue editing
             $err['guidedummy'] = 1;
-        } else if (isset($data['saveguide']) && $data['saveguide']) {
+        } else if ((isset($data['saveguide']) && $data['saveguide']) ||
+                   (isset($data['saveguidedraft']) && $data['saveguidedraft'])) {
             // If user attempts to make guide active - it needs to be validated
             if ($guideel->validate($data['guide']) !== false) {
                 $err['guidedummy'] = 1;
