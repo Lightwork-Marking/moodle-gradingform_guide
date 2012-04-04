@@ -68,6 +68,7 @@ M.gradingform_guideeditor.clickanywhere = function(e) {
 
 // switch the criterion item to edit mode or switch back
 M.gradingform_guideeditor.editmode = function(el, editmode) {
+    var Y = M.gradingform_guideeditor.Y
     var ta = el
     if (!editmode && ta.hasClass('hiddenelement')) return;
     if (editmode && !ta.hasClass('hiddenelement')) return;
@@ -90,7 +91,7 @@ M.gradingform_guideeditor.editmode = function(el, editmode) {
     if (!editmode) {
         // if we need to hide the input fields, copy their contents to plainvalue(s). If description/definition
         // is empty, display the default text ('Click to edit ...') and add/remove 'empty' CSS class to element
-        var value = YAHOO.lang.trim(ta.get('value'));
+        var value = Y.Lang.trim(ta.get('value'));
         if (value.length) {
             taplain.removeClass('empty')
         } else if (ta.get('name').indexOf('[shortname]') > 1){
