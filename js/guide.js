@@ -5,8 +5,6 @@ M.gradingform_guide = {};
  */
 M.gradingform_guide.init = function(Y, options) {
     var currentfocus = null;
-    var collapsedwidth = null;
-    var shortwidth = null;
 
     Y.all('.markingguideremark').on('blur', function(e) {
         currentfocus = e.currentTarget;
