@@ -221,7 +221,7 @@ class gradingform_guide_controller extends gradingform_controller {
                     }
                 }
                 if ($doupdate) {
-                    $id = $DB->insert_record('gradingform_guide_faq', $data);
+                    $id = $DB->insert_record('gradingform_guide_comments', $data);
                 }
             } else {
                 // update criterion in DB
@@ -235,7 +235,7 @@ class gradingform_guide_controller extends gradingform_controller {
                     // update only if something is changed
                     $data['id'] = $id;
                     if ($doupdate) {
-                        $DB->update_record('gradingform_guide_faq', $data);
+                        $DB->update_record('gradingform_guide_comments', $data);
                     }
                 }
             }
@@ -244,7 +244,7 @@ class gradingform_guide_controller extends gradingform_controller {
         foreach (array_keys($currentcomments) as $id) {
             if (!array_key_exists($id, $newcomment)) {
                 if ($doupdate) {
-                    $DB->delete_records('gradingform_guide_faq', array('id' => $id));
+                    $DB->delete_records('gradingform_guide_comments', array('id' => $id));
                 }
             }
         }
@@ -297,7 +297,7 @@ class gradingform_guide_controller extends gradingform_controller {
                        rf.description AS rfdescription, rf.descriptionformat AS rfdescriptionformat
                   FROM {grading_definitions} gd
              LEFT JOIN {gradingform_guide_criteria} rc ON (rc.definitionid = gd.id)
-             LEFT JOIN {gradingform_guide_faq} rf ON (rf.definitionid = gd.id)
+             LEFT JOIN {gradingform_guide_comments} rf ON (rf.definitionid = gd.id)
                  WHERE gd.areaid = :areaid AND gd.method = :method
               ORDER BY rc.sortorder, rf.sortorder";
         $params = array('areaid' => $this->areaid, 'method' => $this->get_method_name());
