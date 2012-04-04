@@ -53,10 +53,7 @@ class gradingform_guide_controller extends gradingform_controller {
     const DISPLAY_VIEW          = 7;
 
     /** @var stdClass|false the definition structure */
-    protected $moduleinstance = array();
-
-    /** @var array An array of validation errors */
-    protected $validationerrors = array();
+    protected $moduleinstance = false;
 
     /**
      * Extends the module settings navigation with the guide grading settings
@@ -162,7 +159,6 @@ class gradingform_guide_controller extends gradingform_controller {
         $criteriafields = array('sortorder', 'description', 'descriptionformat', 'descriptionmarkers',
             'descriptionmarkersformat', 'shortname', 'maxscore');
         foreach ($newcriteria as $id => $criterion) {
-            $criterionmaxscore = null;
             if (preg_match('/^NEWID\d+$/', $id)) {
                 // insert criterion into DB
                 $data = array('definitionid' => $this->definition->id, 'descriptionformat' => FORMAT_MOODLE,
@@ -290,16 +286,16 @@ class gradingform_guide_controller extends gradingform_controller {
     protected function load_definition() {
         global $DB;
         $sql = "SELECT gd.*,
-                       rc.id AS rcid, rc.sortorder AS rcsortorder, rc.description AS rcdescription,
-                       rc.descriptionformat AS rcdescriptionformat, rc.descriptionmarkers AS rcdescriptionmarkers,
-                       rc.descriptionmarkersformat AS rcdescriptionmarkersformat, rc.shortname AS rcshortname,
-                       rc.maxscore AS rcmaxscore, rf.id as rfid, rf.sortorder AS rfsortorder,
-                       rf.description AS rfdescription, rf.descriptionformat AS rfdescriptionformat
+                       gc.id AS gcid, gc.sortorder AS gcsortorder, gc.description AS gcdescription,
+                       gc.descriptionformat AS gcdescriptionformat, gc.descriptionmarkers AS gcdescriptionmarkers,
+                       gc.descriptionmarkersformat AS gcdescriptionmarkersformat, gc.shortname AS gcshortname,
+                       gc.maxscore AS gcmaxscore, gf.id as gfid, gf.sortorder AS gfsortorder,
+                       gf.description AS gfdescription, gf.descriptionformat AS gfdescriptionformat
                   FROM {grading_definitions} gd
-             LEFT JOIN {gradingform_guide_criteria} rc ON (rc.definitionid = gd.id)
-             LEFT JOIN {gradingform_guide_comments} rf ON (rf.definitionid = gd.id)
+             LEFT JOIN {gradingform_guide_criteria} gc ON (gc.definitionid = gd.id)
+             LEFT JOIN {gradingform_guide_comments} gf ON (gf.definitionid = gd.id)
                  WHERE gd.areaid = :areaid AND gd.method = :method
-              ORDER BY rc.sortorder, rf.sortorder";
+              ORDER BY gc.sortorder, gf.sortorder";
         $params = array('areaid' => $this->areaid, 'method' => $this->get_method_name());
 
         $rs = $DB->get_recordset_sql($sql, $params);
@@ -316,20 +312,20 @@ class gradingform_guide_controller extends gradingform_controller {
                 $this->definition->guide_comment = array();
             }
             // pick the criterion data
-            if (!empty($record->rcid) and empty($this->definition->guide_criteria[$record->rcid])) {
+            if (!empty($record->gcid) and empty($this->definition->guide_criteria[$record->gcid])) {
                 foreach (array('id', 'sortorder', 'description', 'descriptionformat',
                                'maxscore', 'descriptionmarkers', 'descriptionmarkersformat', 'shortname') as $fieldname) {
                     if ($fieldname == 'maxscore') {
-                        $this->definition->guide_criteria[$record->rcid][$fieldname] = (float)$record->{'rc'.$fieldname}; //strip any trailing 0
+                        $this->definition->guide_criteria[$record->gcid][$fieldname] = (float)$record->{'gc'.$fieldname}; //strip any trailing 0
                     } else {
-                        $this->definition->guide_criteria[$record->rcid][$fieldname] = $record->{'rc'.$fieldname};
+                        $this->definition->guide_criteria[$record->gcid][$fieldname] = $record->{'gc'.$fieldname};
                     }
                 }
             }
             // pick the comment data
-            if (!empty($record->rfid) and empty($this->definition->guide_comment[$record->rfid])) {
+            if (!empty($record->gfid) and empty($this->definition->guide_comment[$record->gfid])) {
                 foreach (array('id', 'sortorder', 'description', 'descriptionformat') as $fieldname) {
-                    $this->definition->guide_comment[$record->rfid][$fieldname] = $record->{'rf'.$fieldname};
+                    $this->definition->guide_comment[$record->gfid][$fieldname] = $record->{'gf'.$fieldname};
                 }
             }
         }
@@ -395,7 +391,9 @@ class gradingform_guide_controller extends gradingform_controller {
         $definition = $this->get_definition();
         $properties = new stdClass();
         $properties->areaid = $this->areaid;
-        $properties->modulegrade = $this->moduleinstance->grade;
+        if (isset($this->moduleinstance->grade)) {
+            $properties->modulegrade = $this->moduleinstance->grade;
+        }
         if ($definition) {
             foreach (array('id', 'name', 'description', 'descriptionformat', 'status') as $key) {
                 $properties->$key = $definition->$key;
@@ -432,7 +430,6 @@ class gradingform_guide_controller extends gradingform_controller {
         $new->description_editor = $old->description_editor;
         $new->guide = array('criteria' => array(), 'options' => $old->guide['options'], 'comments' => array());
         $newcritid = 1;
-        $newlevid = 1;
         foreach ($old->guide['criteria'] as $oldcritid => $oldcrit) {
             unset($oldcrit['id']);
             $new->guide['criteria']['NEWID'.$newcritid] = $oldcrit;
@@ -598,7 +595,7 @@ class gradingform_guide_controller extends gradingform_controller {
      * @return string
      */
     public static function sql_search_from_tables($gdid) {
-        return " LEFT JOIN {gradingform_guide_criteria} rc ON (rc.definitionid = $gdid)";
+        return " LEFT JOIN {gradingform_guide_criteria} gc ON (gc.definitionid = $gdid)";
     }
 
     /**
@@ -620,11 +617,7 @@ class gradingform_guide_controller extends gradingform_controller {
         $params = array();
 
         // search in guide criteria description
-        $subsql[] = $DB->sql_like('rc.description', '?', false, false);
-        $params[] = '%'.$DB->sql_like_escape($token).'%';
-
-        // search in guide levels definition
-        $subsql[] = $DB->sql_like('rl.definition', '?', false, false);
+        $subsql[] = $DB->sql_like('gc.description', '?', false, false);
         $params[] = '%'.$DB->sql_like_escape($token).'%';
 
         return array($subsql, $params);
@@ -665,6 +658,9 @@ class gradingform_guide_instance extends gradingform_instance {
 
     /** @var array */
     protected $guide;
+
+    /** @var array An array of validation errors */
+    protected $validationerrors = array();
 
     /**
      * Deletes this (INCOMPLETE) instance from database.
