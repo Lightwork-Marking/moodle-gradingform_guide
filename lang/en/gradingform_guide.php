@@ -65,6 +65,7 @@ $string['hidemarkerdesc'] = 'Hide marker criterion descriptions';
 $string['hidestudentdesc'] = 'Hide student criterion descriptions';
 $string['maxscore'] = 'Maximum mark';
 $string['needregrademessage'] = 'The marking guide definition was changed after this student had been graded. The student can not see this marking guide until you check the marking guide and update the grade.';
+$string['previewmarkingguide'] = 'Preview marking guide';
 $string['regrademessage1'] = 'You are about to save changes to a marking guide that has already been used for grading. Please indicate if existing grades need to be reviewed. If you set this then the marking guide will be hidden from students until their item is regraded.';
 $string['regrademessage5'] = 'You are about to save significant changes to a marking guide that has already been used for grading. The gradebook value will be unchanged, but the marking guide will be hidden from students until their item is regraded.';
 $string['regradeoption0'] = 'Do not mark for regrade';
