@@ -537,6 +537,8 @@ class gradingform_guide_controller extends gradingform_controller {
             array('definitionid' => $this->definition->id), '', 'id'));
         // delete critera
         $DB->delete_records_list('gradingform_guide_criteria', 'id', $criteria);
+        //delete comments
+        $DB->delete_records('gradingform_guide_comments', array('definitionid' => $this->definition->id));
     }
 
     /**
