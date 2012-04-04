@@ -7,43 +7,28 @@ M.gradingform_guide.init = function(Y, options) {
     var currentfocus = null;
     var collapsedwidth = null;
     var shortwidth = null;
-    Y.all('.markingguideremark').each(function (node) {
-        node.on('blur', function(ev) {
-            currentfocus = node;
-        });
+
+    Y.all('.markingguideremark').on('blur', function(e) {
+        currentfocus = e.currentTarget;
     });
-    Y.all('.markingguidecomment').each(function (node) {
-        node.on('click', function(ev) {
-            currentfocus.setContent(currentfocus.get('innerHTML') + '\n' + node.get('innerHTML'));
-            currentfocus.focus();
-        });
+    Y.all('.markingguidecomment').on('click', function(e) {
+        currentfocus.setContent(currentfocus.get('innerHTML') + '\n' + e.currentTarget.get('innerHTML'));
+        currentfocus.focus();
     });
 
-    Y.all('.showmarkerdesc input[type=radio]').each(function(node) {
-        node.on('click', function(ev) {
-            if (node.get('value')=='false') {
-                Y.all('.criteriondescriptionmarkers').each(function(node) {
-                    node.addClass('hide')
-                })
-            } else {
-                Y.all('.criteriondescriptionmarkers').each(function(node) {
-                    node.removeClass('hide')
-                })
-            }
-        });
-    })
+    Y.all('.showmarkerdesc input[type=radio]').on('click', function(e) {
+        if (e.currentTarget.get('value')=='false') {
+            Y.all('.criteriondescriptionmarkers').addClass('hide');
+        } else {
+            Y.all('.criteriondescriptionmarkers').removeClass('hide');
+        }
+    });
 
-    Y.all('.showstudentdesc input[type=radio]').each(function(node) {
-        node.on('click', function(ev) {
-            if (node.get('value')=='false') {
-                Y.all('.criteriondescription').each(function(node) {
-                    node.addClass('hide')
-                })
-            } else {
-                Y.all('.criteriondescription').each(function(node) {
-                    node.removeClass('hide')
-                })
-            }
-        });
-    })
+    Y.all('.showstudentdesc input[type=radio]').on('click', function(e) {
+        if (e.currentTarget.get('value')=='false') {
+            Y.all('.criteriondescription').addClass('hide');
+        } else {
+            Y.all('.criteriondescription').removeClass('hide');
+        }
+    });
 };
