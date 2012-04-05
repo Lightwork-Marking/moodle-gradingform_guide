@@ -285,51 +285,33 @@ class gradingform_guide_controller extends gradingform_controller {
      */
     protected function load_definition() {
         global $DB;
-        $sql = "SELECT gd.*,
-                       gc.id AS gcid, gc.sortorder AS gcsortorder, gc.description AS gcdescription,
-                       gc.descriptionformat AS gcdescriptionformat, gc.descriptionmarkers AS gcdescriptionmarkers,
-                       gc.descriptionmarkersformat AS gcdescriptionmarkersformat, gc.shortname AS gcshortname,
-                       gc.maxscore AS gcmaxscore, gf.id as gfid, gf.sortorder AS gfsortorder,
-                       gf.description AS gfdescription, gf.descriptionformat AS gfdescriptionformat
-                  FROM {grading_definitions} gd
-             LEFT JOIN {gradingform_guide_criteria} gc ON (gc.definitionid = gd.id)
-             LEFT JOIN {gradingform_guide_comments} gf ON (gf.definitionid = gd.id)
-                 WHERE gd.areaid = :areaid AND gd.method = :method
-              ORDER BY gc.sortorder, gf.sortorder";
-        $params = array('areaid' => $this->areaid, 'method' => $this->get_method_name());
-
-        $rs = $DB->get_recordset_sql($sql, $params);
-        $this->definition = false;
-        foreach ($rs as $record) {
-            // pick the common definition data
-            if ($this->definition === false) {
-                $this->definition = new stdClass();
-                foreach (array('id', 'name', 'description', 'descriptionformat', 'status', 'copiedfromid',
-                        'timecreated', 'usercreated', 'timemodified', 'usermodified', 'timecopied', 'options') as $fieldname) {
-                    $this->definition->$fieldname = $record->$fieldname;
-                }
-                $this->definition->guide_criteria = array();
-                $this->definition->guide_comment = array();
-            }
-            // pick the criterion data
-            if (!empty($record->gcid) and empty($this->definition->guide_criteria[$record->gcid])) {
-                foreach (array('id', 'sortorder', 'description', 'descriptionformat',
-                               'maxscore', 'descriptionmarkers', 'descriptionmarkersformat', 'shortname') as $fieldname) {
-                    if ($fieldname == 'maxscore') {
-                        $this->definition->guide_criteria[$record->gcid][$fieldname] = (float)$record->{'gc'.$fieldname}; //strip any trailing 0
-                    } else {
-                        $this->definition->guide_criteria[$record->gcid][$fieldname] = $record->{'gc'.$fieldname};
-                    }
-                }
-            }
-            // pick the comment data
-            if (!empty($record->gfid) and empty($this->definition->guide_comment[$record->gfid])) {
-                foreach (array('id', 'sortorder', 'description', 'descriptionformat') as $fieldname) {
-                    $this->definition->guide_comment[$record->gfid][$fieldname] = $record->{'gf'.$fieldname};
+        //first get definition
+        $this->definition = $DB->get_record('grading_definitions', array('areaid' => $this->areaid, 'method' => $this->get_method_name()), '*');
+        //now get criteria
+        $this->definition->guide_criteria = array();
+        $this->definition->guide_comment = array();
+        $criteria = $DB->get_recordset('gradingform_guide_criteria', array('definitionid'=>$this->definition->id), 'sortorder');
+        foreach ($criteria as $criterion) {
+            foreach (array('id', 'sortorder', 'description', 'descriptionformat',
+                           'maxscore', 'descriptionmarkers', 'descriptionmarkersformat', 'shortname') as $fieldname) {
+                if ($fieldname == 'maxscore') {
+                    $this->definition->guide_criteria[$criterion->id][$fieldname] = (float)$criterion->{$fieldname}; //strip any trailing 0
+                } else {
+                    $this->definition->guide_criteria[$criterion->id][$fieldname] = $criterion->{$fieldname};
                 }
             }
         }
-        $rs->close();
+        $criteria->close();
+
+        //now get comments
+        $comments = $DB->get_recordset('gradingform_guide_comments', array('definitionid'=>$this->definition->id), 'sortorder');
+        foreach ($comments as $comment) {
+            foreach (array('id', 'sortorder', 'description', 'descriptionformat') as $fieldname) {
+                $this->definition->guide_comment[$comment->id][$fieldname] = $comment->{$fieldname};
+            }
+        }
+        $comments->close();
+
         $showdesc = optional_param('showmarkerdesc', null, PARAM_BOOL); //check if we need to change pref
         $showdescstudent = optional_param('showstudentdesc', null, PARAM_BOOL); //check if we need to change pref
         if ($showdesc !== null) {
