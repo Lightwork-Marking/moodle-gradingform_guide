@@ -290,7 +290,7 @@ class gradingform_guide_controller extends gradingform_controller {
         //now get criteria
         $this->definition->guide_criteria = array();
         $this->definition->guide_comment = array();
-        $criteria = $DB->get_recordset('gradingform_guide_criteria', array('definitionid'=>$this->definition->id), 'sortorder');
+        $criteria = $DB->get_recordset('gradingform_guide_criteria', array('definitionid' => $this->definition->id), 'sortorder');
         foreach ($criteria as $criterion) {
             foreach (array('id', 'sortorder', 'description', 'descriptionformat',
                            'maxscore', 'descriptionmarkers', 'descriptionmarkersformat', 'shortname') as $fieldname) {
@@ -304,7 +304,7 @@ class gradingform_guide_controller extends gradingform_controller {
         $criteria->close();
 
         //now get comments
-        $comments = $DB->get_recordset('gradingform_guide_comments', array('definitionid'=>$this->definition->id), 'sortorder');
+        $comments = $DB->get_recordset('gradingform_guide_comments', array('definitionid' => $this->definition->id), 'sortorder');
         foreach ($comments as $comment) {
             foreach (array('id', 'sortorder', 'description', 'descriptionformat') as $fieldname) {
                 $this->definition->guide_comment[$comment->id][$fieldname] = $comment->{$fieldname};
@@ -691,7 +691,8 @@ class gradingform_guide_instance extends gradingform_instance {
         $this->validationerrors = null;
         foreach ($criteria as $id => $criterion) {
             if (!isset($elementvalue['criteria'][$id]['score'])
-                    || $criterion['maxscore'] < $elementvalue['criteria'][$id]['score'] ) {
+                    || $criterion['maxscore'] < $elementvalue['criteria'][$id]['score']
+                    || !is_numeric($elementvalue['criteria'][$id]['score'])) {
                 $this->validationerrors[$id]['score'] =  $elementvalue['criteria'][$id]['score'];
             }
         }
