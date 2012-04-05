@@ -285,7 +285,19 @@ class gradingform_guide_controller extends gradingform_controller {
      */
     protected function load_definition() {
         global $DB;
-        //first get definition
+
+        //Check to see if the user prefs have changed - putting here as this function is called on post even when
+        //validation on the page fails. - hard to find a better place to locate this as it is specific to the guide.
+        $showdesc = optional_param('showmarkerdesc', null, PARAM_BOOL); //check if we need to change pref
+        $showdescstudent = optional_param('showstudentdesc', null, PARAM_BOOL); //check if we need to change pref
+        if ($showdesc !== null) {
+            set_user_preference('gradingform_guide-showmarkerdesc', $showdesc);
+        }
+        if ($showdescstudent !== null) {
+            set_user_preference('gradingform_guide-showstudentdesc', $showdescstudent);
+        }
+
+        //get definition
         $this->definition = $DB->get_record('grading_definitions', array('areaid' => $this->areaid, 'method' => $this->get_method_name()), '*');
         //now get criteria
         $this->definition->guide_criteria = array();
@@ -312,14 +324,6 @@ class gradingform_guide_controller extends gradingform_controller {
         }
         $comments->close();
 
-        $showdesc = optional_param('showmarkerdesc', null, PARAM_BOOL); //check if we need to change pref
-        $showdescstudent = optional_param('showstudentdesc', null, PARAM_BOOL); //check if we need to change pref
-        if ($showdesc !== null) {
-            set_user_preference('gradingform_guide-showmarkerdesc', $showdesc);
-        }
-        if ($showdescstudent !== null) {
-            set_user_preference('gradingform_guide-showstudentdesc', $showdescstudent);
-        }
         if (empty($this->moduleinstance)) { //only set if empty.
             $modulename = $this->get_component();
             $context = $this->get_context();
