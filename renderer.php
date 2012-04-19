@@ -144,7 +144,6 @@ class gradingform_guide_renderer extends plugin_renderer_base {
             $descriptionclass .= ' error';
         }
 
-        $displayremark = ($mode != gradingform_guide_controller::DISPLAY_VIEW);
         $title = html_writer::tag('label', get_string('criterion', 'gradingform_guide'),
             array('for'=>'{NAME}[criteria][{CRITERION-id}][shortname]', 'class' => 'criterionnamelabel'));
         $title .= $shortname;
@@ -168,42 +167,40 @@ class gradingform_guide_renderer extends plugin_renderer_base {
         $criteriontemplate .= html_writer::tag('td', $title, array('class' => $descriptionclass,
             'id' => '{NAME}-criteria-{CRITERION-id}-shortname'));
 
-        if ($displayremark) {
-            $currentremark = '';
-            $currentscore = '';
-            if (isset($value['remark'])) {
-                $currentremark = $value['remark'];
+        $currentremark = '';
+        $currentscore = '';
+        if (isset($value['remark'])) {
+            $currentremark = $value['remark'];
+        }
+        if (isset($value['score'])) {
+            $currentscore = $value['score'];
+        }
+        if ($mode == gradingform_guide_controller::DISPLAY_EVAL) {
+            $scoreclass = '';
+            if (!empty($validationerrors[$criterion['id']]['score'])) {
+                $scoreclass = 'error';
+                $currentscore = $validationerrors[$criterion['id']]['score']; //show invalid score in form
             }
-            if (isset($value['score'])) {
-                $currentscore = $value['score'];
-            }
-            if ($mode == gradingform_guide_controller::DISPLAY_EVAL) {
-                $scoreclass = '';
-                if (!empty($validationerrors[$criterion['id']]['score'])) {
-                    $scoreclass = 'error';
-                    $currentscore = $validationerrors[$criterion['id']]['score']; //show invalid score in form
-                }
-                $input = html_writer::tag('textarea', htmlspecialchars($currentremark),
-                    array('name' => '{NAME}[criteria][{CRITERION-id}][remark]', 'cols' => '65', 'rows' => '5',
-                          'class' => 'markingguideremark'));
-                $criteriontemplate .= html_writer::tag('td', $input, array('class' => 'remark'));
-                $score = html_writer::tag('label', get_string('score', 'gradingform_guide'),
-                    array('for'=>'{NAME}[criteria][{CRITERION-id}][score]', 'class' => $scoreclass));
-                $score .= html_writer::empty_tag('input', array('type'=> 'text',
-                    'name' => '{NAME}[criteria][{CRITERION-id}][score]', 'class' => $scoreclass,
-                    'size' => '3', 'value' => htmlspecialchars($currentscore)));
-                $score .= '/'.$maxscore;
+            $input = html_writer::tag('textarea', htmlspecialchars($currentremark),
+                array('name' => '{NAME}[criteria][{CRITERION-id}][remark]', 'cols' => '65', 'rows' => '5',
+                      'class' => 'markingguideremark'));
+            $criteriontemplate .= html_writer::tag('td', $input, array('class' => 'remark'));
+            $score = html_writer::tag('label', get_string('score', 'gradingform_guide'),
+                array('for'=>'{NAME}[criteria][{CRITERION-id}][score]', 'class' => $scoreclass));
+            $score .= html_writer::empty_tag('input', array('type'=> 'text',
+                'name' => '{NAME}[criteria][{CRITERION-id}][score]', 'class' => $scoreclass,
+                'size' => '3', 'value' => htmlspecialchars($currentscore)));
+            $score .= '/'.$maxscore;
 
-                $criteriontemplate .= html_writer::tag('td', $score, array('class' => 'score'));
-            } else if ($mode == gradingform_guide_controller::DISPLAY_EVAL_FROZEN) {
-                $criteriontemplate .= html_writer::empty_tag('input', array('type' => 'hidden',
-                    'name' => '{NAME}[criteria][{CRITERION-id}][remark]', 'value' => $currentremark));
-            } else if ($mode == gradingform_guide_controller::DISPLAY_REVIEW ||
-                $mode == gradingform_guide_controller::DISPLAY_VIEW) {
-                $criteriontemplate .= html_writer::tag('td', $currentremark, array('class' => 'remark'));
-                if (!empty($options['showmarkspercriterionstudents'])) {
-                    $criteriontemplate .= html_writer::tag('td', htmlspecialchars($currentscore). ' / '.$maxscore, array('class' => 'score'));
-                }
+            $criteriontemplate .= html_writer::tag('td', $score, array('class' => 'score'));
+        } else if ($mode == gradingform_guide_controller::DISPLAY_EVAL_FROZEN) {
+            $criteriontemplate .= html_writer::empty_tag('input', array('type' => 'hidden',
+                'name' => '{NAME}[criteria][{CRITERION-id}][remark]', 'value' => $currentremark));
+        } else if ($mode == gradingform_guide_controller::DISPLAY_REVIEW ||
+            $mode == gradingform_guide_controller::DISPLAY_VIEW) {
+            $criteriontemplate .= html_writer::tag('td', $currentremark, array('class' => 'remark'));
+            if (!empty($options['showmarkspercriterionstudents'])) {
+                $criteriontemplate .= html_writer::tag('td', htmlspecialchars($currentscore). ' / '.$maxscore, array('class' => 'score'));
             }
         }
         $criteriontemplate .= html_writer::end_tag('tr'); // .criterion
