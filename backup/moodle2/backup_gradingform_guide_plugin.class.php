@@ -26,11 +26,16 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Defines marking guide backup structures
+ *
+ * @package    gradingform_guide
+ * @copyright  2012 Dan Marsden <dan@danmarsden.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_gradingform_guide_plugin extends backup_gradingform_plugin {
 
     /**
      * Declares marking guide structures to append to the grading form definition
+     * @return backup_plugin_element
      */
     protected function define_definition_plugin_structure() {
 
@@ -45,15 +50,15 @@ class backup_gradingform_guide_plugin extends backup_gradingform_plugin {
 
         // Define our elements
 
-        $criteria = new backup_nested_element('criteria');
+        $criteria = new backup_nested_element('guidecriteria');
 
-        $criterion = new backup_nested_element('criterion', array('id'), array(
+        $criterion = new backup_nested_element('guidecriterion', array('id'), array(
             'sortorder', 'shortname', 'description', 'descriptionformat',
             'descriptionmarkers', 'descriptionmarkersformat', 'maxscore'));
 
-        $comments = new backup_nested_element('comments');
+        $comments = new backup_nested_element('guidecomments');
 
-        $comment = new backup_nested_element('comment', array('id'), array(
+        $comment = new backup_nested_element('guidecomment', array('id'), array(
             'sortorder', 'description', 'descriptionformat'));
 
         // Build elements hierarchy
@@ -79,6 +84,7 @@ class backup_gradingform_guide_plugin extends backup_gradingform_plugin {
 
     /**
      * Declares marking guide structures to append to the grading form instances
+     * @return backup_plugin_element
      */
     protected function define_instance_plugin_structure() {
 

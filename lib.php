@@ -298,7 +298,14 @@ class gradingform_guide_controller extends gradingform_controller {
         }
 
         //get definition
-        $this->definition = $DB->get_record('grading_definitions', array('areaid' => $this->areaid, 'method' => $this->get_method_name()), '*');
+        $definition = $DB->get_record('grading_definitions', array('areaid' => $this->areaid, 'method' => $this->get_method_name()), '*');
+        if (!$definition) {
+            // The definition doesn't have to exist. It may be that we are only now creating it.
+            $this->definition = false;
+            return false;
+        }
+
+        $this->definition = $definition;
         //now get criteria
         $this->definition->guide_criteria = array();
         $this->definition->guide_comment = array();

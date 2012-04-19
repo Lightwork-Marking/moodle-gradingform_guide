@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * This file contains the marking guide editor element
+ *
  * @package    gradingform_guide
  * @copyright  2012 Dan Marsden <dan@danmarsden.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,23 +27,27 @@ defined('MOODLE_INTERNAL') || die();
 require_once("HTML/QuickForm/input.php");
 
 /**
+ * The editor for the marking guide advanced grading plugin.
+ *
  * @package    gradingform_guide
  * @copyright  2012 Dan Marsden <dan@danmarsden.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class moodlequickform_guideeditor extends HTML_QuickForm_input {
-    /** help message */
+    /** @var string help message */
     public $_helpbutton = '';
-    /** stores the result of the last validation: null - undefined, false - no errors, string - error(s) text */
+    /** @var null|false|string stores the result of the last validation: null - undefined, false - no errors, string - error(s) text */
     protected $validationerrors = null;
-    /** if element has already been validated **/
+    /** @var bool if element has already been validated **/
     protected $wasvalidated = false;
-    /** If non-submit (JS) button was pressed: null - unknown, true/false - button was/wasn't pressed */
+    /** @var null|bool If non-submit (JS) button was pressed: null - unknown, true/false - button was/wasn't pressed */
     protected $nonjsbuttonpressed = false;
-    /** Message to display in front of the editor (that there exist grades on this guide being edited) */
+    /** @var string|false Message to display in front of the editor (that there exist grades on this guide being edited) */
     protected $regradeconfirmation = false;
 
     /**
+     * Constructor
+     *
      * @param string $elementname
      * @param string $elementlabel
      * @param array $attributes
@@ -53,7 +59,6 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
     /**
      * get html for help button
      *
-     * @access   public
      * @return  string html for help button
      */
     public function getHelpButton() {
@@ -339,7 +344,7 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
      * Prepares the data for saving
      * @see prepare_data()
      *
-     * @param array $submitValues
+     * @param array $submitvalues
      * @param boolean $assoc
      * @return array
      */

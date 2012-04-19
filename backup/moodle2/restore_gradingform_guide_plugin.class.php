@@ -26,6 +26,10 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Restores the marking guide specific data from grading.xml file
+ *
+ * @package    gradingform_guide
+ * @copyright  2012 Dan Marsden <dan@danmarsden.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_gradingform_guide_plugin extends restore_gradingform_plugin {
 
@@ -39,10 +43,10 @@ class restore_gradingform_guide_plugin extends restore_gradingform_plugin {
         $paths = array();
 
         $paths[] = new restore_path_element('gradingform_guide_criterion',
-            $this->get_pathfor('/criteria/criterion'));
+            $this->get_pathfor('/guidecriteria/guidecriterion'));
 
         $paths[] = new restore_path_element('gradingform_guide_comment',
-            $this->get_pathfor('/comments/comment'));
+            $this->get_pathfor('/guidecomments/guidecomment'));
 
         return $paths;
     }
@@ -67,6 +71,8 @@ class restore_gradingform_guide_plugin extends restore_gradingform_plugin {
      *
      * Sets the mapping 'gradingform_guide_criterion' to be used later by
      * {@link self::process_gradinform_guide_filling()}
+     *
+     * @param array|stdClass $data
      */
     public function process_gradingform_guide_criterion($data) {
         global $DB;
@@ -82,6 +88,7 @@ class restore_gradingform_guide_plugin extends restore_gradingform_plugin {
     /**
      * Processes comments element data
      *
+     * @param array|stdClass $data The data to insert as a comment
      */
     public function process_gradingform_guide_comment($data) {
         global $DB;
@@ -94,6 +101,8 @@ class restore_gradingform_guide_plugin extends restore_gradingform_plugin {
 
     /**
      * Processes filling element data
+     *
+     * @param array|stdClass $data The data to insert as a filling
      */
     public function process_gradinform_guide_filling($data) {
         global $DB;

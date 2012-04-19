@@ -48,7 +48,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      * Also JavaScript relies on the class names of elements and when developer changes them
      * script might stop working.
      *
-     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@see gradingform_guide_controller}
+     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@link gradingform_guide_controller()}
      * @param array $options An array of options.
      *      showmarkspercriterionstudents (bool) If true adds the current score to the display
      * @param string $elementname the name of the form element (in editor mode) or the prefix for div ids (in view mode)
@@ -227,7 +227,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      * Also JavaScript relies on the class names of elements and when developer changes them
      * script might stop working.
      *
-     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@see gradingform_guide_controller}
+     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@link gradingform_guide_controller}
      * @param string $elementname the name of the form element (in editor mode) or the prefix for div ids (in view mode)
      * @param array $comment
      * @return string
@@ -303,8 +303,8 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      * Also JavaScript relies on the class names of elements and when developer changes them
      * script might stop working.
      *
-     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@see gradingform_guide_controller}
-     * @param array $options An array of options provided to {@see gradingform_guide_renderer::guide_edit_options()}
+     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@link gradingform_guide_controller}
+     * @param array $options An array of options provided to {@link gradingform_guide_renderer::guide_edit_options()}
      * @param string $elementname the name of the form element (in editor mode) or the prefix for div ids (in view mode)
      * @param string $criteriastr evaluated templates for this guide's criteria
      * @param string $commentstr
@@ -369,7 +369,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      * Generates html template to view/edit the guide options. Expression {NAME} is used in
      * template for the form element name
      *
-     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@see gradingform_guide_controller}
+     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@link gradingform_guide_controller}
      * @param array $options
      * @return string
      */
@@ -442,7 +442,7 @@ class gradingform_guide_renderer extends plugin_renderer_base {
      * @param array $criteria data about the guide design
      * @param array $comments
      * @param array $options
-     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@see gradingform_guide_controller}
+     * @param int $mode guide display mode, one of gradingform_guide_controller::DISPLAY_* {@link gradingform_guide_controller}
      * @param string $elementname the name of the form element (in editor mode) or the prefix for div ids (in view mode)
      * @param array $values evaluation result
      * @param array $validationerrors
