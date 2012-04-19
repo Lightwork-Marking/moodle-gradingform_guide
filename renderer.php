@@ -118,13 +118,15 @@ class gradingform_guide_renderer extends plugin_renderer_base {
                     'name' => '{NAME}[criteria][{CRITERION-id}][descriptionmarkers]', 'value' => $criterion['descriptionmarkers']));
                 $criteriontemplate .= html_writer::empty_tag('input', array('type' => 'hidden',
                     'name' => '{NAME}[criteria][{CRITERION-id}][maxscore]', 'value' => $criterion['maxscore']));
+            } else if ($mode == gradingform_guide_controller::DISPLAY_EVAL ||
+                       $mode == gradingform_guide_controller::DISPLAY_VIEW) {
+                $descriptionclass = 'descriptionreadonly';
             }
             $shortname   = html_writer::tag('div', $criterion['shortname'],
                 array('class'=>'criterionshortname', 'name' => '{NAME}[criteria][{CRITERION-id}][shortname]'));
             $descmarkerclass = '';
             $descstudentclass = '';
             if ($mode == gradingform_guide_controller::DISPLAY_EVAL) {
-                $descriptionclass = 'descriptionreadonly';
                 if (!get_user_preferences('gradingform_guide-showmarkerdesc', true)) {
                     $descmarkerclass = ' hide';
                 }
