@@ -49,17 +49,17 @@ class gradingform_guide_editguide extends moodleform {
 
         $form->addElement('hidden', 'returnurl');
 
-        // name
+        // Name.
         $form->addElement('text', 'name', get_string('name', 'gradingform_guide'), array('size'=>52));
         $form->addRule('name', get_string('required'), 'required');
         $form->setType('name', PARAM_TEXT);
 
-        // description
+        // Description.
         $options = gradingform_guide_controller::description_form_field_options($this->_customdata['context']);
         $form->addElement('editor', 'description_editor', get_string('descriptionstudents', 'gradingform_guide'), null, $options);
         $form->setType('description_editor', PARAM_RAW);
 
-        // guide completion status
+        // Guide completion status.
         $choices = array();
         $choices[gradingform_controller::DEFINITION_STATUS_DRAFT]    = html_writer::tag('span',
             get_string('statusdraft', 'core_grading'), array('class' => 'status draft'));
@@ -67,10 +67,9 @@ class gradingform_guide_editguide extends moodleform {
             get_string('statusready', 'core_grading'), array('class' => 'status ready'));
         $form->addElement('select', 'status', get_string('guidestatus', 'gradingform_guide'), $choices)->freeze();
 
-        // guide editor
+        // Guide editor.
         $element = $form->addElement('guideeditor', 'guide', get_string('pluginname', 'gradingform_guide'));
         $form->setType('guide', PARAM_RAW);
-        //$element->freeze(); // TODO freeze guide editor if needed
 
         $buttonarray = array();
         $buttonarray[] = &$form->createElement('submit', 'saveguide', get_string('saveguide', 'gradingform_guide'));
@@ -122,14 +121,14 @@ class gradingform_guide_editguide extends moodleform {
         $form = $this->_form;
         $guideel = $form->getElement('guide');
         if ($guideel->non_js_button_pressed($data['guide'])) {
-            // if JS is disabled and button such as 'Add criterion' is pressed - prevent from submit
+            // If JS is disabled and button such as 'Add criterion' is pressed - prevent from submit.
             $err['guidedummy'] = 1;
         } else if (isset($data['editguide'])) {
-            // continue editing
+            // Continue editing.
             $err['guidedummy'] = 1;
         } else if ((isset($data['saveguide']) && $data['saveguide']) ||
                    (isset($data['saveguidedraft']) && $data['saveguidedraft'])) {
-            // If user attempts to make guide active - it needs to be validated
+            // If user attempts to make guide active - it needs to be validated.
             if ($guideel->validate($data['guide']) !== false) {
                 $err['guidedummy'] = 1;
             }
@@ -163,24 +162,24 @@ class gradingform_guide_editguide extends moodleform {
     public function need_confirm_regrading($controller) {
         $data = $this->get_data();
         if (isset($data->guide['regrade'])) {
-            // we have already displayed the confirmation on the previous step
+            // We have already displayed the confirmation on the previous step.
             return false;
         }
         if (!isset($data->saveguide) || !$data->saveguide) {
-            // we only need confirmation when button 'Save guide' is pressed
+            // We only need confirmation when button 'Save guide' is pressed.
             return false;
         }
         if (!$controller->has_active_instances()) {
-            // nothing to re-grade, confirmation not needed
+            // Nothing to re-grade, confirmation not needed.
             return false;
         }
         $changelevel = $controller->update_or_check_guide($data);
         if ($changelevel == 0) {
-            // no changes in the guide, no confirmation needed
+            // No changes in the guide, no confirmation needed.
             return false;
         }
 
-        // freeze form elements and pass the values in hidden fields
+        // Freeze form elements and pass the values in hidden fields.
         // TODO description_editor does not freeze the normal way!
         $form = $this->_form;
         foreach (array('guide', 'name'/*, 'description_editor'*/) as $fieldname) {
@@ -192,7 +191,7 @@ class gradingform_guide_editguide extends moodleform {
             }
         }
 
-        // replace button text 'saveguide' and unfreeze 'Back to edit' button
+        // Replace button text 'saveguide' and unfreeze 'Back to edit' button.
         $this->findbutton('saveguide')->setValue(get_string('continue'));
         $el =& $this->findbutton('editguide');
         $el->setValue(get_string('backtoediting', 'gradingform_guide'));

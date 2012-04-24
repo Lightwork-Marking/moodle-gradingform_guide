@@ -23,7 +23,9 @@ M.gradingform_guideeditor.init = function(Y, options) {
 M.gradingform_guideeditor.addhandlers = function() {
     var Y = M.gradingform_guideeditor.Y
     var name = M.gradingform_guideeditor.name
-    if (M.gradingform_guideeditor.eventhandler) M.gradingform_guideeditor.eventhandler.detach()
+    if (M.gradingform_guideeditor.eventhandler) {
+        M.gradingform_guideeditor.eventhandler.detach()
+    }
     M.gradingform_guideeditor.eventhandler = Y.on('click', M.gradingform_guideeditor.buttonclick, '#guide-'+name+' input[type=submit]', null);
 }
 
@@ -40,7 +42,9 @@ M.gradingform_guideeditor.disablealleditors = function() {
 // it switches the element to edit mode. If guide button is clicked it does nothing so the 'buttonclick'
 // function is invoked
 M.gradingform_guideeditor.clickanywhere = function(e) {
-    if (e.type == 'touchstart') return
+    if (e.type == 'touchstart') {
+        return
+    }
     var el = e.target
     // if clicked on button - disablecurrenteditor, continue
     if (el.get('tagName') == 'INPUT' && el.get('type') == 'submit') {
@@ -70,8 +74,12 @@ M.gradingform_guideeditor.clickanywhere = function(e) {
 M.gradingform_guideeditor.editmode = function(el, editmode) {
     var Y = M.gradingform_guideeditor.Y
     var ta = el
-    if (!editmode && ta.hasClass('hiddenelement')) return;
-    if (editmode && !ta.hasClass('hiddenelement')) return;
+    if (!editmode && ta.hasClass('hiddenelement')) {
+        return;
+    }
+    if (editmode && !ta.hasClass('hiddenelement')) {
+        return;
+    }
     var pseudotablink = '<input type="text" size="1" class="pseudotablink"/>',
         taplain = ta.next('.plainvalue'),
         tbplain = null,
@@ -87,7 +95,9 @@ M.gradingform_guideeditor.editmode = function(el, editmode) {
             tbplain.one('.pseudotablink').on('focus', M.gradingform_guideeditor.clickanywhere)
         }
     }
-    if (tb && !tbplain) tbplain = tb.get('parentNode').one('.plainvalue')
+    if (tb && !tbplain) {
+        tbplain = tb.get('parentNode').one('.plainvalue')
+    }
     if (!editmode) {
         // if we need to hide the input fields, copy their contents to plainvalue(s). If description/definition
         // is empty, display the default text ('Click to edit ...') and add/remove 'empty' CSS class to element
@@ -102,7 +112,9 @@ M.gradingform_guideeditor.editmode = function(el, editmode) {
             taplain.addClass('empty')
         }
         taplain.one('.textvalue').set('innerHTML', value)
-        if (tb) tbplain.one('.textvalue').set('innerHTML', tb.get('value'))
+        if (tb) {
+            tbplain.one('.textvalue').set('innerHTML', tb.get('value'))
+        }
         // hide/display textarea, textbox and plaintexts
         taplain.removeClass('hiddenelement')
         ta.addClass('hiddenelement')
@@ -143,13 +155,17 @@ M.gradingform_guideeditor.editmode = function(el, editmode) {
 M.gradingform_guideeditor.buttonclick = function(e, confirmed) {
     var Y = M.gradingform_guideeditor.Y
     var name = M.gradingform_guideeditor.name
-    if (e.target.get('type') != 'submit') return;
+    if (e.target.get('type') != 'submit') {
+        return;
+    }
     M.gradingform_guideeditor.disablealleditors()
     var chunks = e.target.get('id').split('-')
     var section = chunks[1]
     var action = chunks[chunks.length-1]
 
-    if (chunks[0] != name || (section != 'criteria' && section != 'comments')) return;
+    if (chunks[0] != name || (section != 'criteria' && section != 'comments')) {
+        return;
+    }
     // prepare the id of the next inserted criterion
 
     if (section == 'criteria') {
@@ -168,7 +184,9 @@ M.gradingform_guideeditor.buttonclick = function(e, confirmed) {
     if (chunks.length == 3 && (action == 'addcriterion' || action == 'addcomment')) {
         // ADD NEW CRITERION OR COMMENT
         var parentel = Y.one('#'+name+'-'+section)
-        if (parentel.one('>tbody')) parentel = parentel.one('>tbody')
+        if (parentel.one('>tbody')) {
+            parentel = parentel.one('>tbody')
+        }
         if (section == 'criteria') {
             var newcriterion = M.gradingform_guideeditor.templates[name]['criterion']
             parentel.append(newcriterion.replace(/\{CRITERION-id\}/g, 'NEWID'+newid).replace(/\{.+?\}/g, ''))
@@ -184,12 +202,16 @@ M.gradingform_guideeditor.buttonclick = function(e, confirmed) {
     } else if (chunks.length == 4 && action == 'moveup') {
         // MOVE UP
         el = Y.one('#'+name+'-'+section+'-'+chunks[2])
-        if (el.previous()) el.get('parentNode').insertBefore(el, el.previous())
+        if (el.previous()) {
+            el.get('parentNode').insertBefore(el, el.previous())
+        }
         M.gradingform_guideeditor.assignclasses(elements_str)
     } else if (chunks.length == 4 && action == 'movedown') {
         // MOVE DOWN
         el = Y.one('#'+name+'-'+section+'-'+chunks[2])
-        if (el.next()) el.get('parentNode').insertBefore(el.next(), el)
+        if (el.next()) {
+            el.get('parentNode').insertBefore(el.next(), el)
+        }
         M.gradingform_guideeditor.assignclasses(elements_str)
     } else if (chunks.length == 4 && action == 'delete') {
         // DELETE
@@ -214,7 +236,7 @@ M.gradingform_guideeditor.assignclasses = function (elements_str) {
         elements.item(i).removeClass('first').removeClass('last').removeClass('even').removeClass('odd').
             addClass(((i%2)?'odd':'even') + ((i==0)?' first':'') + ((i==elements.size()-1)?' last':''))
         elements.item(i).all('input[type=hidden]').each(
-            function(node) {if (node.get('name').match(/sortorder/)) node.set('value', i)}
+            function(node) {if (node.get('name').match(/sortorder/)) { node.set('value', i)}}
         );
     }
 }
@@ -224,7 +246,7 @@ M.gradingform_guideeditor.calculatenewid = function (elements_str) {
     var newid = 1
     M.gradingform_guideeditor.Y.all(elements_str).each( function(node) {
         var idchunks = node.get('id').split('-'), id = idchunks.pop();
-        if (id.match(/^NEWID(\d+)$/)) newid = Math.max(newid, parseInt(id.substring(5))+1);
+        if (id.match(/^NEWID(\d+)$/)) { newid = Math.max(newid, parseInt(id.substring(5))+1)};
     } );
     return newid
 }

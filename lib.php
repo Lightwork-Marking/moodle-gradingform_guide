@@ -34,7 +34,7 @@ require_once($CFG->dirroot.'/grade/grading/form/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class gradingform_guide_controller extends gradingform_controller {
-    // Modes of displaying the guide (used in gradingform_guide_renderer)
+    // Modes of displaying the guide (used in gradingform_guide_renderer).
     /** guide display mode: For editing (moderator or teacher creates a guide) */
     const DISPLAY_EDIT_FULL     = 1;
     /** guide display mode: Preview the guide design with hidden fields */
@@ -83,7 +83,7 @@ class gradingform_guide_controller extends gradingform_controller {
      */
     public function extend_navigation(global_navigation $navigation, navigation_node $node=null) {
         if (has_capability('moodle/grade:managegradingforms', $this->get_context())) {
-            // no need for preview if user can manage forms, he will have link to manage.php in settings instead
+            // No need for preview if user can manage forms, he will have link to manage.php in settings instead.
             return;
         }
         if ($this->is_form_defined() && ($options = $this->get_options()) && !empty($options['alwaysshowdefinition'])) {
@@ -126,14 +126,14 @@ class gradingform_guide_controller extends gradingform_controller {
     public function update_or_check_guide(stdClass $newdefinition, $usermodified = null, $doupdate = false) {
         global $DB;
 
-        // firstly update the common definition data in the {grading_definition} table
+        // Firstly update the common definition data in the {grading_definition} table.
         if ($this->definition === false) {
             if (!$doupdate) {
-                // if we create the new definition there is no such thing as re-grading anyway
+                // If we create the new definition there is no such thing as re-grading anyway.
                 return 5;
             }
-            // if definition does not exist yet, create a blank one
-            // (we need id to save files embedded in description)
+            // If definition does not exist yet, create a blank one
+            // (we need id to save files embedded in description).
             parent::update_definition(new stdClass(), $usermodified);
             parent::load_definition();
         }
@@ -145,24 +145,24 @@ class gradingform_guide_controller extends gradingform_controller {
         $newdefinition = file_postupdate_standard_editor($newdefinition, 'description', $editoroptions, $this->get_context(),
             'grading', 'description', $this->definition->id);
 
-        // reload the definition from the database
+        // Reload the definition from the database.
         $currentdefinition = $this->get_definition(true);
 
-        // update guide data
+        // Update guide data.
         $haschanges = array();
         if (empty($newdefinition->guide['criteria'])) {
             $newcriteria = array();
         } else {
-            $newcriteria = $newdefinition->guide['criteria']; // new ones to be saved
+            $newcriteria = $newdefinition->guide['criteria']; // New ones to be saved.
         }
         $currentcriteria = $currentdefinition->guide_criteria;
         $criteriafields = array('sortorder', 'description', 'descriptionformat', 'descriptionmarkers',
             'descriptionmarkersformat', 'shortname', 'maxscore');
         foreach ($newcriteria as $id => $criterion) {
             if (preg_match('/^NEWID\d+$/', $id)) {
-                // insert criterion into DB
+                // Insert criterion into DB.
                 $data = array('definitionid' => $this->definition->id, 'descriptionformat' => FORMAT_MOODLE,
-                    'descriptionmarkersformat' => FORMAT_MOODLE); // TODO format is not supported yet
+                    'descriptionmarkersformat' => FORMAT_MOODLE); // TODO format is not supported yet.
                 foreach ($criteriafields as $key) {
                     if (array_key_exists($key, $criterion)) {
                         $data[$key] = $criterion[$key];
@@ -173,7 +173,7 @@ class gradingform_guide_controller extends gradingform_controller {
                 }
                 $haschanges[5] = true;
             } else {
-                // update criterion in DB
+                // Update criterion in DB.
                 $data = array();
                 foreach ($criteriafields as $key) {
                     if (array_key_exists($key, $criterion) && $criterion[$key] != $currentcriteria[$id][$key]) {
@@ -181,7 +181,7 @@ class gradingform_guide_controller extends gradingform_controller {
                     }
                 }
                 if (!empty($data)) {
-                    // update only if something is changed
+                    // Update only if something is changed.
                     $data['id'] = $id;
                     if ($doupdate) {
                         $DB->update_record('gradingform_guide_criteria', $data);
@@ -190,7 +190,7 @@ class gradingform_guide_controller extends gradingform_controller {
                 }
             }
         }
-        // remove deleted criteria from DB
+        // Remove deleted criteria from DB.
         foreach (array_keys($currentcriteria) as $id) {
             if (!array_key_exists($id, $newcriteria)) {
                 if ($doupdate) {
@@ -199,17 +199,17 @@ class gradingform_guide_controller extends gradingform_controller {
                 $haschanges[3] = true;
             }
         }
-        //now handle comments:
+        // Now handle comments.
         if (empty($newdefinition->guide['comments'])) {
             $newcomment = array();
         } else {
-            $newcomment = $newdefinition->guide['comments']; // new ones to be saved
+            $newcomment = $newdefinition->guide['comments']; // New ones to be saved.
         }
         $currentcomments = $currentdefinition->guide_comment;
         $commentfields = array('sortorder', 'description');
         foreach ($newcomment as $id => $comment) {
             if (preg_match('/^NEWID\d+$/', $id)) {
-                // insert criterion into DB
+                // Insert criterion into DB.
                 $data = array('definitionid' => $this->definition->id, 'descriptionformat' => FORMAT_MOODLE);
                 foreach ($commentfields as $key) {
                     if (array_key_exists($key, $comment)) {
@@ -220,7 +220,7 @@ class gradingform_guide_controller extends gradingform_controller {
                     $id = $DB->insert_record('gradingform_guide_comments', $data);
                 }
             } else {
-                // update criterion in DB
+                // Update criterion in DB.
                 $data = array();
                 foreach ($commentfields as $key) {
                     if (array_key_exists($key, $comment) && $comment[$key] != $currentcomments[$id][$key]) {
@@ -228,7 +228,7 @@ class gradingform_guide_controller extends gradingform_controller {
                     }
                 }
                 if (!empty($data)) {
-                    // update only if something is changed
+                    // Update only if something is changed.
                     $data['id'] = $id;
                     if ($doupdate) {
                         $DB->update_record('gradingform_guide_comments', $data);
@@ -236,7 +236,7 @@ class gradingform_guide_controller extends gradingform_controller {
                 }
             }
         }
-        // remove deleted criteria from DB
+        // Remove deleted criteria from DB.
         foreach (array_keys($currentcomments) as $id) {
             if (!array_key_exists($id, $newcomment)) {
                 if ($doupdate) {
@@ -244,7 +244,7 @@ class gradingform_guide_controller extends gradingform_controller {
                 }
             }
         }
-        //end comments handle
+        // End comments handle.
         foreach (array('status', 'description', 'descriptionformat', 'name', 'options') as $key) {
             if (isset($newdefinition->$key) && $newdefinition->$key != $this->definition->$key) {
                 $haschanges[1] = true;
@@ -260,7 +260,7 @@ class gradingform_guide_controller extends gradingform_controller {
             parent::update_definition($newdefinition, $usermodified);
             $this->load_definition();
         }
-        // return the maximum level of changes
+        // Return the maximum level of changes.
         $changelevels = array_keys($haschanges);
         sort($changelevels);
         return array_pop($changelevels);
@@ -286,10 +286,10 @@ class gradingform_guide_controller extends gradingform_controller {
     protected function load_definition() {
         global $DB;
 
-        //Check to see if the user prefs have changed - putting here as this function is called on post even when
-        //validation on the page fails. - hard to find a better place to locate this as it is specific to the guide.
-        $showdesc = optional_param('showmarkerdesc', null, PARAM_BOOL); //check if we need to change pref
-        $showdescstudent = optional_param('showstudentdesc', null, PARAM_BOOL); //check if we need to change pref
+        // Check to see if the user prefs have changed - putting here as this function is called on post even when
+        // validation on the page fails. - hard to find a better place to locate this as it is specific to the guide.
+        $showdesc = optional_param('showmarkerdesc', null, PARAM_BOOL); // Check if we need to change pref.
+        $showdescstudent = optional_param('showstudentdesc', null, PARAM_BOOL); // Check if we need to change pref.
         if ($showdesc !== null) {
             set_user_preference('gradingform_guide-showmarkerdesc', $showdesc);
         }
@@ -297,8 +297,9 @@ class gradingform_guide_controller extends gradingform_controller {
             set_user_preference('gradingform_guide-showstudentdesc', $showdescstudent);
         }
 
-        //get definition
-        $definition = $DB->get_record('grading_definitions', array('areaid' => $this->areaid, 'method' => $this->get_method_name()), '*');
+        // Get definition.
+        $definition = $DB->get_record('grading_definitions', array('areaid' => $this->areaid,
+            'method' => $this->get_method_name()), '*');
         if (!$definition) {
             // The definition doesn't have to exist. It may be that we are only now creating it.
             $this->definition = false;
@@ -306,15 +307,15 @@ class gradingform_guide_controller extends gradingform_controller {
         }
 
         $this->definition = $definition;
-        //now get criteria
+        // Now get criteria.
         $this->definition->guide_criteria = array();
         $this->definition->guide_comment = array();
         $criteria = $DB->get_recordset('gradingform_guide_criteria', array('definitionid' => $this->definition->id), 'sortorder');
         foreach ($criteria as $criterion) {
             foreach (array('id', 'sortorder', 'description', 'descriptionformat',
                            'maxscore', 'descriptionmarkers', 'descriptionmarkersformat', 'shortname') as $fieldname) {
-                if ($fieldname == 'maxscore') {
-                    $this->definition->guide_criteria[$criterion->id][$fieldname] = (float)$criterion->{$fieldname}; //strip any trailing 0
+                if ($fieldname == 'maxscore') {  // Strip any trailing 0.
+                    $this->definition->guide_criteria[$criterion->id][$fieldname] = (float)$criterion->{$fieldname};
                 } else {
                     $this->definition->guide_criteria[$criterion->id][$fieldname] = $criterion->{$fieldname};
                 }
@@ -322,7 +323,7 @@ class gradingform_guide_controller extends gradingform_controller {
         }
         $criteria->close();
 
-        //now get comments
+        // Now get comments.
         $comments = $DB->get_recordset('gradingform_guide_comments', array('definitionid' => $this->definition->id), 'sortorder');
         foreach ($comments as $comment) {
             foreach (array('id', 'sortorder', 'description', 'descriptionformat') as $fieldname) {
@@ -331,7 +332,7 @@ class gradingform_guide_controller extends gradingform_controller {
         }
         $comments->close();
 
-        if (empty($this->moduleinstance)) { //only set if empty.
+        if (empty($this->moduleinstance)) { // Only set if empty.
             $modulename = $this->get_component();
             $context = $this->get_context();
             if (strpos($modulename, 'mod_') === 0) {
@@ -519,18 +520,18 @@ class gradingform_guide_controller extends gradingform_controller {
     protected function delete_plugin_definition() {
         global $DB;
 
-        // get the list of instances
+        // Get the list of instances.
         $instances = array_keys($DB->get_records('grading_instances', array('definitionid' => $this->definition->id), '', 'id'));
-        // delete all fillings
+        // Delete all fillings.
         $DB->delete_records_list('gradingform_guide_fillings', 'instanceid', $instances);
-        // delete instances
+        // Delete instances.
         $DB->delete_records_list('grading_instances', 'id', $instances);
-        // get the list of criteria records
+        // Get the list of criteria records.
         $criteria = array_keys($DB->get_records('gradingform_guide_criteria',
             array('definitionid' => $this->definition->id), '', 'id'));
-        // delete critera
+        // Delete critera.
         $DB->delete_records_list('gradingform_guide_criteria', 'id', $criteria);
-        //delete comments
+        // Delete comments.
         $DB->delete_records('gradingform_guide_comments', array('definitionid' => $this->definition->id));
     }
 
@@ -581,7 +582,7 @@ class gradingform_guide_controller extends gradingform_controller {
         return $this->get_renderer($page)->display_instances($this->get_active_instances($itemid), $defaultcontent, $cangrade);
     }
 
-    //// full-text search support /////////////////////////////////////////////
+    // Full-text search support.
 
     /**
      * Prepare the part of the search query to append to the FROM statement
@@ -611,7 +612,7 @@ class gradingform_guide_controller extends gradingform_controller {
         $subsql = array();
         $params = array();
 
-        // search in guide criteria description
+        // Search in guide criteria description.
         $subsql[] = $DB->sql_like('gc.description', '?', false, false);
         $params[] = '%'.$DB->sql_like_escape($token).'%';
 
@@ -698,7 +699,7 @@ class gradingform_guide_instance extends gradingform_instance {
             count($elementvalue['criteria']) < count($criteria)) {
             return false;
         }
-        //reset validation errors:
+        // Reset validation errors.
         $this->validationerrors = null;
         foreach ($criteria as $id => $criterion) {
             if (!isset($elementvalue['criteria'][$id]['score'])
@@ -725,7 +726,7 @@ class gradingform_guide_instance extends gradingform_instance {
             $records = $DB->get_records('gradingform_guide_fillings', array('instanceid' => $this->get_id()));
             $this->guide = array('criteria' => array());
             foreach ($records as $record) {
-                $record->score = (float)$record->score; //strip trailing 0
+                $record->score = (float)$record->score; // Strip trailing 0.
                 $this->guide['criteria'][$record->criterionid] = (array)$record;
             }
         }
@@ -811,7 +812,8 @@ class gradingform_guide_instance extends gradingform_instance {
     public function render_grading_element($page, $gradingformelement) {
         if (!$gradingformelement->_flagFrozen) {
             $module = array('name'=>'gradingform_guide', 'fullpath'=>'/grade/grading/form/guide/js/guide.js');
-            $page->requires->js_init_call('M.gradingform_guide.init', array(array('name' => $gradingformelement->getName())), true, $module);
+            $page->requires->js_init_call('M.gradingform_guide.init', array(
+                array('name' => $gradingformelement->getName())), true, $module);
             $mode = gradingform_guide_controller::DISPLAY_EVAL;
         } else {
             if ($gradingformelement->_persistantFreeze) {
@@ -852,8 +854,12 @@ class gradingform_guide_instance extends gradingform_instance {
                 $value['criteria'][$criterionid]['score'] = $curvalues['score'];
                 $newremark = null;
                 $newscore = null;
-                if (isset($value['criteria'][$criterionid]['remark'])) $newremark = $value['criteria'][$criterionid]['remark'];
-                if (isset($value['criteria'][$criterionid]['score'])) $newscore = $value['criteria'][$criterionid]['score'];
+                if (isset($value['criteria'][$criterionid]['remark'])) {
+                    $newremark = $value['criteria'][$criterionid]['remark'];
+                }
+                if (isset($value['criteria'][$criterionid]['score'])) {
+                    $newscore = $value['criteria'][$criterionid]['score'];
+                }
                 if ($newscore != $curvalues['score'] || $newremark != $curvalues['remark']) {
                     $haschanges = true;
                 }

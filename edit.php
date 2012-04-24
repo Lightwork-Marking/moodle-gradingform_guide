@@ -52,7 +52,7 @@ $mform->set_data($data);
 if ($mform->is_cancelled()) {
     redirect($returnurl);
 } else if ($mform->is_submitted() && $mform->is_validated() && !$mform->need_confirm_regrading($controller)) {
-    // everything ok, validated, re-grading confirmed if needed. Make changes to the rubric
+    // Everything ok, validated, re-grading confirmed if needed. Make changes to the rubric.
     $controller->update_definition($mform->get_data());
     redirect($returnurl);
 }

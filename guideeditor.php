@@ -36,7 +36,8 @@ require_once("HTML/QuickForm/input.php");
 class moodlequickform_guideeditor extends HTML_QuickForm_input {
     /** @var string help message */
     public $_helpbutton = '';
-    /** @var null|false|string stores the result of the last validation: null - undefined, false - no errors, string - error(s) text */
+    /** @var null|false|string stores the result of the last validation: null - undefined, false - no errors,
+     * string - error(s) text */
     protected $validationerrors = null;
     /** @var bool if element has already been validated **/
     protected $wasvalidated = false;
@@ -111,7 +112,7 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
                    )),
                 true, $module);
         } else {
-            // guide is frozen, no javascript needed
+            // Guide is frozen, no javascript needed.
             if ($this->_persistantFreeze) {
                 $mode = gradingform_guide_controller::DISPLAY_EDIT_FROZEN;
             } else {
@@ -158,10 +159,10 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
             $value['criteria'] = array();
             $errors['err_nocriteria'] = 1;
         }
-        // If options are present in $value, replace default values with submitted values
+        // If options are present in $value, replace default values with submitted values.
         if (!empty($value['options'])) {
             foreach (array_keys($return['options']) as $option) {
-                // special treatment for checkboxes
+                // Special treatment for checkboxes.
                 if (!empty($value['options'][$option])) {
                     $return['options'][$option] = $value['options'][$option];
                 } else {
@@ -172,7 +173,7 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
         }
 
         if (is_array($value)) {
-            // for other array keys of $value no special treatmeant neeeded, copy them to return value as is
+            // For other array keys of $value no special treatmeant neeeded, copy them to return value as is.
             foreach (array_keys($value) as $key) {
                 if ($key != 'options' && $key != 'criteria' && $key != 'comments') {
                     $return[$key] = $value[$key];
@@ -180,7 +181,7 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
             }
         }
 
-        // iterate through criteria
+        // Iterate through criteria.
         $lastaction = null;
         $lastid = null;
         foreach ($value['criteria'] as $id => $criterion) {
@@ -229,13 +230,13 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
             }
         }
 
-        // add sort order field to criteria
+        // Add sort order field to criteria.
         $csortorder = 1;
         foreach (array_keys($return['criteria']) as $id) {
             $return['criteria'][$id]['sortorder'] = $csortorder++;
         }
 
-        //iterate through comments
+        // Iterate through comments.
         $lastaction = null;
         $lastid = null;
         if (!empty($value['comments'])) {
@@ -271,13 +272,13 @@ class moodlequickform_guideeditor extends HTML_QuickForm_input {
                     $lastid = $id;
                 }
             }
-            // add sort order field to comments
+            // Add sort order field to comments.
             $csortorder = 1;
             foreach (array_keys($return['comments']) as $id) {
                 $return['comments'][$id]['sortorder'] = $csortorder++;
             }
         }
-        // create validation error string (if needed)
+        // Create validation error string (if needed).
         if ($withvalidation) {
             if (count($errors)) {
                 $rv = array();
