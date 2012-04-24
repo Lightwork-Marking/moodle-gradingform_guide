@@ -56,6 +56,7 @@
 .gradingform_guide.editor .pseudotablink {background-color:transparent;border:0 solid;height:1px;width:1px;color:transparent;padding:0;margin:0;position:relative;float:right;}
 
 .gradingform_guide .markingguidecomment {cursor: pointer;}
+.jsenabled .gradingform_guide .markingguidecomment:before {content: url([[pix:t/add]]);padding-right:2px;}
 .gradingform_guide .commentheader  {font-weight:bold;font-size:1.1em;padding-bottom:5px;}
 
 .jsenabled .gradingform_guide .criterionnamelabel {display: none;}
