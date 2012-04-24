@@ -10,7 +10,7 @@ M.gradingform_guide.init = function(Y, options) {
         currentfocus = e.currentTarget;
     });
     Y.all('.markingguidecomment').on('click', function(e) {
-        currentfocus.setContent(currentfocus.get('innerHTML') + '\n' + e.currentTarget.get('innerHTML'));
+        currentfocus.set('value', currentfocus.get('value') + '\n' + e.currentTarget.get('innerHTML'));
         currentfocus.focus();
     });
 
